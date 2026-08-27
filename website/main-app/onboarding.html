@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thiết lập hồ sơ – Dolphins21</title>
+  <title>Dolphins21 – Onboarding</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
@@ -15,70 +15,72 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="dashboard.html" class="nav-link" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
     <div style="max-width: 680px; margin: 0 auto;">
-      <span class="eyebrow">Onboarding & Setup</span>
-      <h1 class="page-title">Chào mừng đến với Dolphins21</h1>
-      <p class="page-subtitle">
-        Khởi tạo hồ sơ của bạn và hiểu rõ quy tắc 4 Stages trước khi bước vào hành trình tự nâng chuẩn chuyên môn.
+      <span class="eyebrow" id="onboardEyebrow">Onboarding</span>
+      <h1 class="page-title" data-i18n="onboard_title">Chào mừng bạn</h1>
+      <p class="page-subtitle" data-i18n="onboard_subtitle">
+        Khởi tạo hồ sơ giáo viên để cá nhân hóa lộ trình phát triển.
       </p>
 
-      <div class="surface-card" style="margin-bottom: 24px;">
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">1. Hiểu 4 Cấp Độ Năng Lực (Stages)</h3>
-        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
-          <div style="padding: 10px; border-left: 3px solid var(--stage-1); background: var(--neutral-50);">
-            <strong>Stage 1 (Novice):</strong> Đang bắt đầu làm quen, thực hiện không thường xuyên hoặc theo chỉ đạo.
-          </div>
-          <div style="padding: 10px; border-left: 3px solid var(--stage-2); background: var(--neutral-50);">
-            <strong>Stage 2 (Developing):</strong> Đang phát triển, thực hiện khá đều đặn nhưng cần hỗ trợ hoặc điều chỉnh.
-          </div>
-          <div style="padding: 10px; border-left: 3px solid var(--stage-3); background: var(--neutral-50);">
-            <strong>Stage 3 (Proficient):</strong> Thành thạo, chủ động thu thập dữ liệu, áp dụng nhất quán và linh hoạt.
-          </div>
-          <div style="padding: 10px; border-left: 3px solid var(--stage-4); background: var(--neutral-50);">
-            <strong>Stage 4 (Mentor / Expert):</strong> Đạt mức hình mẫu, dẫn dắt đồng nghiệp, cải tiến liên tục hệ thống.
-          </div>
-        </div>
-      </div>
-
       <div class="surface-card">
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">2. Thông Tin Hồ Sơ Giáo Viên</h3>
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" data-i18n="onboard_card_title">Hồ sơ giáo viên</h3>
         <form id="profileForm">
           <div class="form-group">
-            <label class="form-label">Họ và tên của bạn</label>
-            <input type="text" id="nameInput" class="form-input" required placeholder="Ví dụ: Nguyễn Văn A">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Môn giảng dạy / Lĩnh vực</label>
-            <input type="text" id="subjectInput" class="form-input" required placeholder="Ví dụ: Toán học, STEM, Tiếng Anh">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Số năm kinh nghiệm giảng dạy</label>
-            <input type="number" id="yearsInput" class="form-input" min="0" max="50" placeholder="Số năm">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Trường học / Tổ chức</label>
-            <input type="text" id="schoolInput" class="form-input" placeholder="Tên trường học">
+            <label class="form-label">
+              <span data-i18n="onboard_name">Họ và tên</span>
+            </label>
+            <input type="text" id="nameInput" class="form-input" required placeholder="Ví dụ: Hoàng Nam">
+            <span class="form-helper" id="nameHelper">Tên hiển thị trên hồ sơ</span>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
-            Lưu hồ sơ và vào Dashboard →
+          <div class="form-group">
+            <label class="form-label">
+              <span data-i18n="onboard_subject">Môn giảng dạy</span>
+            </label>
+            <input type="text" id="subjectInput" class="form-input" required placeholder="Ví dụ: Toán học, STEM">
+            <span class="form-helper" id="subjectHelper">Lĩnh vực giảng dạy chính</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="onboard_years">Năm kinh nghiệm</label>
+            <input type="number" id="yearsInput" class="form-input" min="0" max="50" placeholder="Ví dụ: 5">
+            <span class="form-helper" id="yearsHelper">Số năm đứng lớp thực tế</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="onboard_school">Trường / Cơ sở</label>
+            <input type="text" id="schoolInput" class="form-input" placeholder="Ví dụ: THCS Đổi Mới">
+            <span class="form-helper" id="schoolHelper">Đơn vị công tác hiện tại</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;" data-i18n="onboard_btn_submit">
+            Lưu & Vào Dashboard →
           </button>
+
+          <div style="text-align: center; margin-top: 16px;">
+            <button type="button" id="btnLoadSample" class="btn btn-secondary btn-sm" style="font-size: 13px;" data-i18n="btn_load_sample">
+              ✨ Dữ liệu mẫu
+            </button>
+          </div>
         </form>
       </div>
     </div>
   </main>
 
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      renderOnboarding();
+
       const profile = DolphinsStore.getProfile();
       if (profile) {
         document.getElementById('nameInput').value = profile.name || '';
@@ -97,7 +99,23 @@
         });
         window.location.href = 'dashboard.html';
       });
+
+      document.getElementById('btnLoadSample').addEventListener('click', () => {
+        DolphinsStore.loadSampleData();
+        window.location.href = 'dashboard.html';
+      });
+
+      window.addEventListener('languageChanged', renderOnboarding);
     });
+
+    function renderOnboarding() {
+      const isEn = I18N.getLang() === 'en';
+      document.getElementById('onboardEyebrow').textContent = isEn ? 'Onboarding' : 'Thiết lập';
+      document.getElementById('nameHelper').textContent = isEn ? 'Display name' : 'Tên hiển thị trên hồ sơ';
+      document.getElementById('subjectHelper').textContent = isEn ? 'Primary field' : 'Lĩnh vực giảng dạy chính';
+      document.getElementById('yearsHelper').textContent = isEn ? 'Years in teaching' : 'Số năm đứng lớp thực tế';
+      document.getElementById('schoolHelper').textContent = isEn ? 'School or institution' : 'Đơn vị công tác hiện tại';
+    }
   </script>
 </body>
 </html>

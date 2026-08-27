@@ -16,6 +16,7 @@ Trước khi viết bất kỳ dòng code nào, AI phải đọc các file sau t
 3. `A_Requirements/A2_UserStories.md` → 23 user stories + Proof of Work per story
 4. `A_Requirements/A3_Sitemap.md` → 17 màn hình, route structure, Rule of 3 clicks
 5. `A_Requirements/A4_ContentStandards.md` → Rubric rules, CTA templates, micro-copy
+6. `A_Requirements/A5_UserGuidelines.md` → Onboarding Flow, Micro-guidance, Passive guides
 
 ### PHASE B – Hiểu hệ thống (đọc khi bắt đầu build)
 6. `B_System Design/B0_SystemWiki.md` → Stack overview, deploy flow, glossary
@@ -83,10 +84,11 @@ Core tokens (từ conan1.com/styles):
 
 ## CONTENT RULES – Không được vi phạm
 
-1. **Rubric text** từ Building 21: KHÔNG dịch, KHÔNG paraphrase, KHÔNG rút gọn
-2. **CTA**: Phải bắt đầu bằng động từ hành động. VD: "Lưu đánh giá và xem Radar Chart"
-3. **Tone**: Không "Điểm yếu" / "Kém nhất" → dùng "Đang phát triển nhất"
-4. **Next Action**: LUÔN có sau kết quả – không để user "xem xong rồi đóng tab"
+1. **Rubric text** từ Building 21: KHÔNG paraphrase, KHÔNG rút gọn làm sai lệch tiêu chí
+2. **Ngôn ngữ & 2 Mode**: Hỗ trợ 2 chế độ độc lập **VI Mode** (100% Tiếng Việt chuẩn) và **EN Mode** (100% Tiếng Anh chuẩn). Tuyệt đối **KHÔNG dùng chú thích đóng mở ngoặc dịch thuật lai tạp** như `(Radar Chart)`, `(Evidence)`, `(Goals)` trong UI
+3. **CTA**: Phải bắt đầu bằng động từ hành động + kết quả cụ thể (Ví dụ: "Lưu đánh giá và xem Biểu Đồ Năng Lực" / "Save Assessment and View Radar Chart")
+4. **Tone**: Không "Điểm yếu" / "Kém nhất" → dùng "Đang phát triển nhất" / "Primary growth area"
+5. **Next Action**: LUÔN có sau kết quả – không để user "xem xong rồi đóng tab"
 
 ---
 
@@ -139,7 +141,8 @@ A_Requirements/
 ├── A1_JTBD.md              ← FJ/EJ/SJ jobs (10+6+3)
 ├── A2_UserStories.md       ← 23 stories + Proof of Work
 ├── A3_Sitemap.md           ← 17 screens, routes
-└── A4_ContentStandards.md  ← Copy rules, rubric handling
+├── A4_ContentStandards.md  ← Copy rules, rubric handling
+└── A5_UserGuidelines.md    ← Onboarding flow, micro-guidance, empty states
 
 B_System Design/
 ├── B0_SystemWiki.md        ← Cloudflare stack, glossary

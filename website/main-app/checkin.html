@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Check-in – Dolphins21</title>
+  <title>Dolphins21 – Check-in</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
@@ -15,36 +15,35 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="dashboard.html" class="nav-link" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link active" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
     <div style="max-width: 680px; margin: 0 auto;">
-      <span class="eyebrow">Rhythm over Event</span>
-      <h1 class="page-title">Weekly Habit Check-in</h1>
-      <p class="page-subtitle">Dành ít hơn 5 phút mỗi tuần để cập nhật tiến độ, duy trì chuỗi Streak và ghi lại 1 phản chiếu thực tế.</p>
+      <span class="eyebrow" data-i18n="checkin_eyebrow">Rhythm</span>
+      <h1 class="page-title" data-i18n="checkin_title">Weekly Check-in</h1>
+      <p class="page-subtitle" data-i18n="checkin_subtitle">Dành <5 phút để cập nhật tiến độ và duy trì chuỗi Streak.</p>
 
       <div class="surface-card">
         <form id="checkinForm">
           <div class="form-group">
-            <label class="form-label">1. Tuần này bạn đã tập trung vào năng lực nào?</label>
+            <label class="form-label" data-i18n="checkin_q1">1. Năng lực tập trung tuần này:</label>
             <div id="checkinFocusList" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
               <!-- Dynamic focus list -->
             </div>
           </div>
 
           <div class="form-group" style="margin-top: 20px;">
-            <label class="form-label">2. Ghi nhận 1 bằng chứng (Evidence) hoặc bài học quan trọng nhất trong tuần</label>
-            <textarea id="checkinNote" class="form-textarea" rows="4" required placeholder="Ví dụ: Tôi đã áp dụng thử rubric tự chấm cho học sinh nhóm A..."></textarea>
+            <label class="form-label" data-i18n="checkin_q2">2. Ghi 1 bằng chứng thực tế trong tuần:</label>
+            <textarea id="checkinNote" class="form-textarea" rows="4" required data-i18n-placeholder="evidence_placeholder"></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 12px;">
-            ⚡ Hoàn thành Check-in Tuần & Nhận Streak →
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 12px;" data-i18n="checkin_btn_submit">
+            ⚡ Hoàn thành Check-in →
           </button>
         </form>
       </div>
@@ -53,23 +52,15 @@
 
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const focus = DolphinsStore.getFocus();
-      const container = document.getElementById('checkinFocusList');
-      container.innerHTML = focus.map(compId => {
-        const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId };
-        return `
-          <label style="display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer;">
-            <input type="checkbox" checked style="accent-color: var(--primary);">
-            <span style="font-weight: 700; font-size: 14px;">${comp.id} · ${comp.name}</span>
-          </label>
-        `;
-      }).join('');
+      renderCheckinPage();
 
       document.getElementById('checkinForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const note = document.getElementById('checkinNote').value;
+        const focus = DolphinsStore.getFocus();
         DolphinsStore.saveWeeklyLog(note);
         DolphinsStore.saveEvidence({
           indicator_id: `${focus[0] || 'TC1.1'}-IND-1`,
@@ -78,10 +69,31 @@
           content: `[Weekly Check-in] ${note}`,
           tags: ['weekly-checkin']
         });
-        alert('Chúc mừng! Bạn đã hoàn thành Check-in tuần này và duy trì chuỗi Streak thành công.');
+        alert(I18N.t('checkin_success'));
         window.location.href = 'dashboard.html';
       });
+
+      window.addEventListener('languageChanged', renderCheckinPage);
     });
+
+    function renderCheckinPage() {
+      const isEn = I18N.getLang() === 'en';
+      const focus = DolphinsStore.getFocus();
+      const container = document.getElementById('checkinFocusList');
+      if (focus.length === 0) {
+        container.innerHTML = `<p style="font-size: 13px; color: var(--muted-foreground);">${isEn ? 'No focus competencies currently pinned.' : 'Chưa có năng lực nào trong tiêu điểm.'}</p>`;
+      } else {
+        container.innerHTML = focus.map(compId => {
+          const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId };
+          return `
+            <label style="display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: var(--primary);">
+              <span style="font-weight: 700; font-size: 14px;">${comp.id} · ${comp.name}</span>
+            </label>
+          `;
+        }).join('');
+      }
+    }
   </script>
 </body>
 </html>

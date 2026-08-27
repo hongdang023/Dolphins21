@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Xuất Dữ Liệu – Dolphins21</title>
+  <title>Dolphins21 – Export Data</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
@@ -15,44 +15,44 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
-        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
-        <li><a href="export.html" class="nav-link active">Xuất dữ liệu</a></li>
+        <li><a href="dashboard.html" class="nav-link active" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
     <div style="max-width: 720px; margin: 0 auto;">
-      <span class="eyebrow">Data Portability</span>
-      <h1 class="page-title">Xuất & Sao Lưu Dữ Liệu Hồ Sơ</h1>
-      <p class="page-subtitle">Dữ liệu hoàn toàn thuộc quyền sở hữu của bạn. Bạn có thể xuất file JSON để sao lưu hoặc chuyển đổi sang thiết bị khác.</p>
+      <span class="eyebrow" id="exportEyebrow">Data Portability</span>
+      <h1 class="page-title" data-i18n="export_title">Xuất dữ liệu</h1>
+      <p class="page-subtitle" data-i18n="export_subtitle">Toàn quyền sao lưu và khôi phục dữ liệu hồ sơ.</p>
 
       <div class="surface-card" style="margin-bottom: 24px;">
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;">1. Sao Lưu Toàn Bộ Dữ Liệu (Backup JSON)</h3>
-        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 16px;">
-          Bao gồm: Thông tin Profile, toàn bộ điểm đánh giá (Ratings), Snapshots, Mục tiêu SMART và Evidence Vault.
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;" data-i18n="export_card1_title">1. Sao lưu JSON</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 16px;" data-i18n="export_card1_desc">
+          Tải về toàn bộ hồ sơ, ratings, snapshots, goals và evidence.
         </p>
-        <button id="btnExportJSON" class="btn btn-primary">Tải về file dolphins21_backup.json ↓</button>
+        <button id="btnExportJSON" class="btn btn-primary" data-i18n="btn_export_json">Xuất tệp Backup ↓</button>
       </div>
 
       <div class="surface-card">
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;">2. Khôi Phục Dữ Liệu (Import JSON)</h3>
-        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 16px;">
-          Tải lên file JSON đã sao lưu từ trước để khôi phục trạng thái làm việc.
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;" data-i18n="export_card2_title">2. Khôi phục JSON</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 16px;" data-i18n="export_card2_desc">
+          Tải lên tệp backup để khôi phục trạng thái làm việc.
         </p>
         <input type="file" id="importFileInput" accept=".json" style="margin-bottom: 16px; display: block;">
-        <button id="btnImportJSON" class="btn btn-secondary">Khôi phục dữ liệu từ file</button>
+        <button id="btnImportJSON" class="btn btn-secondary" data-i18n="btn_import_json">Khôi phục tệp</button>
       </div>
     </div>
   </main>
 
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      renderExportPage();
+
       document.getElementById('btnExportJSON').addEventListener('click', () => {
         const fullBackup = {
           app: 'Dolphins21',
@@ -77,9 +77,10 @@
       });
 
       document.getElementById('btnImportJSON').addEventListener('click', () => {
+        const isEn = I18N.getLang() === 'en';
         const fileInput = document.getElementById('importFileInput');
         if (!fileInput.files.length) {
-          alert('Vui lòng chọn file JSON để khôi phục.');
+          alert(isEn ? 'Please select a JSON backup file.' : 'Vui lòng chọn tệp backup JSON.');
           return;
         }
 
@@ -95,15 +96,22 @@
             if (data.weeklyLogs) DolphinsStore.set(DolphinsStore.KEYS.WEEKLY_LOGS, data.weeklyLogs);
             if (data.focus) DolphinsStore.set(DolphinsStore.KEYS.FOCUS, data.focus);
 
-            alert('Khôi phục dữ liệu thành công! Đang chuyển về Dashboard...');
+            alert(isEn ? 'Restored successfully! Redirecting...' : 'Khôi phục thành công! Đang chuyển về Dashboard...');
             window.location.href = 'dashboard.html';
           } catch (err) {
-            alert('File JSON không hợp lệ: ' + err.message);
+            alert(isEn ? 'Invalid JSON file: ' + err.message : 'Tệp JSON không hợp lệ: ' + err.message);
           }
         };
         reader.readAsText(fileInput.files[0]);
       });
+
+      window.addEventListener('languageChanged', renderExportPage);
     });
+
+    function renderExportPage() {
+      const isEn = I18N.getLang() === 'en';
+      document.getElementById('exportEyebrow').textContent = isEn ? 'Data Portability' : 'Dữ liệu';
+    }
   </script>
 </body>
 </html>

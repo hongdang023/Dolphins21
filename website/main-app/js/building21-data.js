@@ -4,30 +4,35 @@ window.BUILDING21_DATA = {
     {
       "id": "TC1",
       "name": "Building Relationships",
+      "name_vi": "Xây Dựng Mối Quan Hệ",
       "description": "",
       "sort_order": 1
     },
     {
       "id": "TC2",
       "name": "Personal and Professional Growth and Development",
+      "name_vi": "Phát Triển Cá Nhân & Nghề Nghiệp",
       "description": "",
       "sort_order": 2
     },
     {
       "id": "TC3",
       "name": "Mentoring through Advisory",
+      "name_vi": "Cố Vấn & Hướng Dẫn Học Sinh",
       "description": "",
       "sort_order": 3
     },
     {
       "id": "TC4",
       "name": "Designing for Engagement and Equity",
+      "name_vi": "Thiết Kế Học Tập & Tương Tác",
       "description": "",
       "sort_order": 4
     },
     {
       "id": "TC5",
       "name": "Facilitating Personalized Learning",
+      "name_vi": "Tổ Chức Học Tập Cá Nhân Hóa",
       "description": "",
       "sort_order": 5
     }
@@ -37,273 +42,351 @@ window.BUILDING21_DATA = {
       "id": "TC1",
       "domain_id": "TC1",
       "name": "TC.1 Building Relationships",
+      "name_vi": "TC.1 Xây Dựng Mối Quan Hệ",
       "guiding_question": "",
+      "guiding_question_vi": "",
       "sort_order": 1
     },
     {
       "id": "TC1.1",
       "domain_id": "TC1",
       "name": "Implement trauma-informed and restorative practices",
+      "name_vi": "Thực hành thấu cảm tổn thương và giáo dục phục hồi",
       "guiding_question": "I can interact with students in a fair and equitable manner and consistently implement trauma-informed and restorative practices to support my students.",
+      "guiding_question_vi": "Tôi tương tác với học sinh công bằng, bình đẳng và nhất quán áp dụng các phương pháp thấu cảm tổn thương và phục hồi để hỗ trợ học sinh.",
       "sort_order": 2
     },
     {
       "id": "TC1.2",
       "domain_id": "TC1",
       "name": "Create opportunities for relationship building",
+      "name_vi": "Tạo cơ hội xây dựng mối quan hệ kết nối",
       "guiding_question": "I can create opportunities for students to build relationships with me and with each other and to consider multiple perspectives and manage conflict.",
+      "guiding_question_vi": "Tôi tạo cơ hội để học sinh xây dựng mối quan hệ với tôi và với bạn bè, đồng thời biết lắng nghe đa chiều và giải quyết xung đột tích cực.",
       "sort_order": 3
     },
     {
       "id": "TC1.3",
       "domain_id": "TC1",
       "name": "Value and practice culturally responsive teaching",
+      "name_vi": "Tôn trọng và thực hành giảng dạy đáp ứng đa dạng văn hóa",
       "guiding_question": "I value students’ cultural and linguistic backgrounds and experiences and view this knowledge as capital upon which I can build.",
+      "guiding_question_vi": "Tôi coi trọng nền tảng văn hóa, ngôn ngữ và trải nghiệm của học sinh, xem đó là vốn quý để phát triển bài học.",
       "sort_order": 4
     },
     {
       "id": "TC1.4",
       "domain_id": "TC1",
       "name": "Engage families and the community",
+      "name_vi": "Gắn kết gia đình và cộng đồng",
       "guiding_question": "I engage families and community members to support students' learning and to grow students' personal and professional networks.",
+      "guiding_question_vi": "Tôi kết nối gia đình và cộng đồng để đồng hành cùng học sinh và mở rộng mạng lưới phát triển cá nhân, định hướng nghề nghiệp cho các em.",
       "sort_order": 5
     },
     {
       "id": "TC1.5",
       "domain_id": "TC1",
       "name": "Collaborate with and support colleagues",
+      "name_vi": "Hợp tác và hỗ trợ đồng nghiệp",
       "guiding_question": "I can collaborate with, support, and seek help from my colleagues while adhering to norms and managing conflict as it arises.",
+      "guiding_question_vi": "Tôi hợp tác, hỗ trợ và sẵn sàng tìm kiếm sự giúp đỡ từ đồng nghiệp, tuân thủ chuẩn mực chung và xử lý xung đột hiệu quả.",
       "sort_order": 6
     },
     {
       "id": "TC2",
       "domain_id": "TC2",
       "name": "TC.2 Personal and Professional Growth and Development",
+      "name_vi": "TC.2 Phát Triển Cá Nhân & Nghề Nghiệp",
       "guiding_question": "",
+      "guiding_question_vi": "",
       "sort_order": 1
     },
     {
       "id": "TC2.1",
       "domain_id": "TC2",
       "name": "Seek and embrace challenges and take risks",
+      "name_vi": "Chủ động đón nhận thử thách và dám chấp nhận rủi ro",
       "guiding_question": "I can overcome personal barriers to be able to seek academic challenges and take risks to pursue learning and improved outcomes for students.",
+      "guiding_question_vi": "Tôi vượt qua rào cản bản thân để tìm kiếm thử thách chuyên môn và dám đổi mới phương pháp nhằm nâng cao hiệu quả học tập cho học sinh.",
       "sort_order": 2
     },
     {
       "id": "TC2.2",
       "domain_id": "TC2",
       "name": "Persevere through setbacks",
+      "name_vi": "Kiên trì vượt qua khó khăn và trở ngại",
       "guiding_question": "I can persevere through significant academic and non-academic setbacks or failures and I use mistakes and failures as opportunities for learning and growth.",
+      "guiding_question_vi": "Tôi kiên trì vượt qua thất bại trong giảng dạy cũng như công việc, xem sai lầm là cơ hội quý giá để học hỏi và phát triển.",
       "sort_order": 3
     },
     {
       "id": "TC2.3",
       "domain_id": "TC2",
       "name": "Adopt an innovative mindset",
+      "name_vi": "Hình thành tư duy đổi mới sáng tạo",
       "guiding_question": "I strongly believe in the mission and vision of my school and I understand that adopting an innovative mindset requires patience, time, perseverance through failure, and consistently challenging my traditional beliefs about the purpose of school.",
+      "guiding_question_vi": "Tôi tin tưởng vào sứ mệnh nhà trường và hiểu rằng đổi mới đòi hỏi kiên nhẫn, kiên trì và sẵn sàng vượt qua định kiến sư phạm truyền thống.",
       "sort_order": 4
     },
     {
       "id": "TC2.4",
       "domain_id": "TC2",
       "name": "Seek feedback, support, and resources",
+      "name_vi": "Chủ động tìm kiếm phản hồi, hỗ trợ và tài nguyên",
       "guiding_question": "I consistently seek out feedback and am comfortable asking for help when I need it.",
+      "guiding_question_vi": "Tôi thường xuyên lắng nghe góp ý và cởi mở yêu cầu trợ giúp chuyên môn khi cần thiết.",
       "sort_order": 5
     },
     {
       "id": "TC2.5",
       "domain_id": "TC2",
       "name": "Set goals and reflect on personal and professional growth",
+      "name_vi": "Thiết lập mục tiêu và phản tư tiến trình phát triển",
       "guiding_question": "I set measurable goals for my personal and professional development and use a continuous improvement process to gather data, reflect on my progress, and apply my learning.",
+      "guiding_question_vi": "Tôi đặt mục tiêu phát triển đo lường được, thu thập minh chứng và định kỳ phản tư để nâng cao tay nghề.",
       "sort_order": 6
     },
     {
       "id": "TC2.6",
       "domain_id": "TC2",
       "name": "Practice self-care and build emotional intelligence",
+      "name_vi": "Chăm sóc sức khỏe tinh thần và rèn luyện trí tuệ cảm xúc",
       "guiding_question": "I practice self-care and continue to work on my emotional capacity to care for students who are high need.",
+      "guiding_question_vi": "Tôi duy trì sự cân bằng bản thân và nâng cao năng lực cảm xúc để đồng hành tốt nhất với học sinh có nhu cầu đặc biệt.",
       "sort_order": 7
     },
     {
       "id": "TC2.7",
       "domain_id": "TC2",
       "name": "Commitment to professional learning and leadership",
+      "name_vi": "Cam kết học tập suốt đời và dẫn dắt chuyên môn",
       "guiding_question": "I seek opportunities to deepen my professional practice and to take on a leadership role.",
+      "guiding_question_vi": "Tôi tích cực tìm kiếm cơ hội trau dồi chuyên môn sâu và sẵn sàng đảm nhận vai trò dẫn dắt, chia sẻ kinh nghiệm.",
       "sort_order": 8
     },
     {
       "id": "TC2.8",
       "domain_id": "TC2",
       "name": "Effective use of technology",
+      "name_vi": "Ứng dụng công nghệ hiệu quả trong giảng dạy",
       "guiding_question": "I am comfortable using and supporting others in using a variety of technology and I seek new types of technology to learn and introduce to my students.",
+      "guiding_question_vi": "Tôi sử dụng thành thạo và hỗ trợ đồng nghiệp ứng dụng công nghệ, luôn tìm tòi công cụ số mới phục vụ học sinh.",
       "sort_order": 9
     },
     {
       "id": "TC3",
       "domain_id": "TC3",
       "name": "TC.3 Mentoring Through Advisory",
+      "name_vi": "TC.3 Cố Vấn & Hướng Dẫn Học Sinh",
       "guiding_question": "",
+      "guiding_question_vi": "",
       "sort_order": 1
     },
     {
       "id": "TC3.1",
       "domain_id": "TC3",
       "name": "Nurture trusting and meaningful relationships with students",
+      "name_vi": "Xây dựng mối quan hệ tin cậy và ý nghĩa với học sinh",
       "guiding_question": "I can nurture trusting and meaningful relationships with and among the students in my advisory.",
+      "guiding_question_vi": "Tôi xây dựng mối quan hệ tin cậy, thấu hiểu với từng học sinh và giữa các học sinh trong nhóm cố vấn.",
       "sort_order": 2
     },
     {
       "id": "TC3.2",
       "domain_id": "TC3",
       "name": "Nurture trusting relationships with families",
+      "name_vi": "Nuôi dưỡng mối quan hệ tin cậy với phụ huynh",
       "guiding_question": "I can nurture trusting relationships with the families of each student in my advisory and proactively engage families in a team effort to support their child's social, emotional, and academic growth and progress.",
+      "guiding_question_vi": "Tôi xây dựng quan hệ gắn kết với phụ huynh và chủ động phối hợp để hỗ trợ sự phát triển học tập, cảm xúc và kỹ năng của học sinh.",
       "sort_order": 3
     },
     {
       "id": "TC3.3",
       "domain_id": "TC3",
       "name": "Build community and ownership",
+      "name_vi": "Xây dựng tinh thần cộng đồng và tính tự chủ",
       "guiding_question": "I can design, adapt, and/or facilitate activities that allow students to build community, engage in meaningful conversations, and take ownership of their school experience.",
+      "guiding_question_vi": "Tôi thiết kế và tổ chức các hoạt động giúp học sinh gắn kết tập thể, trao đổi ý nghĩa và chủ động làm chủ hành trình học tập.",
       "sort_order": 4
     },
     {
       "id": "TC3.4",
       "domain_id": "TC3",
       "name": "Monitor data and appropriately intervene",
+      "name_vi": "Theo dõi dữ liệu học tập và can thiệp kịp thời",
       "guiding_question": "I can regularly and consistently monitor the academic, attendance, and behavior data for the students in my advisory and provide interventions when necessary",
+      "guiding_question_vi": "Tôi thường xuyên theo dõi dữ liệu chuyên cần, kết quả học tập, hành vi của học sinh để có biện pháp can thiệp, nâng đỡ kịp thời.",
       "sort_order": 5
     },
     {
       "id": "TC3.5",
       "domain_id": "TC3",
       "name": "Hold regular one-to-one conferences",
+      "name_vi": "Tổ chức các buổi gặp gỡ và trao đổi cá nhân định kỳ",
       "guiding_question": "I can facilitate one-to-one conferences with students to support their academic and personal progress and growth.",
+      "guiding_question_vi": "Tôi định kỳ tổ chức đối thoại 1-1 với từng học sinh để lắng nghe, tháo gỡ khó khăn và định hướng tiến bộ cá nhân.",
       "sort_order": 6
     },
     {
       "id": "TC3.6",
       "domain_id": "TC3",
       "name": "Provide opportunities for growth in Personal Development and Habits of Success competencies",
+      "name_vi": "Tạo cơ hội phát triển năng lực cá nhân và thói quen thành công",
       "guiding_question": "I provide students with ample opportunities to monitor and reflect on their Personal Development goals and to evidence the Habits of Success competencies at the highest levels.",
+      "guiding_question_vi": "Tôi tạo điều kiện để học sinh theo dõi mục tiêu phát triển bản thân và thể hiện các thói quen thành công ở mức độ cao nhất.",
       "sort_order": 7
     },
     {
       "id": "TC3.7",
       "domain_id": "TC3",
       "name": "Support post-secondary planning",
+      "name_vi": "Định hướng nghề nghiệp và lộ trình sau phổ thông",
       "guiding_question": "I can support students in developing an actionable and realistic post-secondary plan and provide support, feedback, and resources to help students successfully implement their plans.",
+      "guiding_question_vi": "Tôi hỗ trợ học sinh xây dựng kế hoạch nghề nghiệp/đại học thực tế và cung cấp tài nguyên, phản hồi để các em hiện thực hóa mục tiêu.",
       "sort_order": 8
     },
     {
       "id": "TC4",
       "domain_id": "TC4",
       "name": "TC.4 Designing for Engagement and Impact",
+      "name_vi": "TC.4 Thiết Kế Học Tập & Tương Tác",
       "guiding_question": "",
+      "guiding_question_vi": "",
       "sort_order": 1
     },
     {
       "id": "TC4.1",
       "domain_id": "TC4",
       "name": "Authentic problem frame or question",
+      "name_vi": "Đặt vấn đề thực tế và câu hỏi gợi mở sâu sắc",
       "guiding_question": "I can design studios that challenge students to wrestle with a complex and authentic problem or question.",
+      "guiding_question_vi": "Tôi thiết kế các dự án học tập thách thức học sinh giải quyết vấn đề thực tế, phức tạp và có ý nghĩa.",
       "sort_order": 2
     },
     {
       "id": "TC4.2",
       "domain_id": "TC4",
       "name": "Culminating performance tasks aligned to competencies",
+      "name_vi": "Thiết kế nhiệm vụ tổng kết gắn liền với chuẩn năng lực",
       "guiding_question": "I can design culminating performance tasks in alignment with target competencies that address the problem frame of my studio.",
+      "guiding_question_vi": "Tôi thiết kế nhiệm vụ sản phẩm cuối kỳ bám sát các nhóm năng lực mục tiêu và giải quyết trọn vẹn bài toán thực tế.",
       "sort_order": 3
     },
     {
       "id": "TC4.3",
       "domain_id": "TC4",
       "name": "Engaging launch",
+      "name_vi": "Khởi động bài học lôi cuốn và truyền cảm hứng",
       "guiding_question": "I can design an engaging launch for my studio that clearly communicates the \"why\" and gives a compelling reason for students to engage in the content and learning while also creating a shared experience and building a shared understanding.",
+      "guiding_question_vi": "Tôi thiết kế phần mở đầu hấp dẫn, truyền tải rõ lý do và ý nghĩa bài học, tạo sự hứng khởi và kết nối trải nghiệm chung.",
       "sort_order": 4
     },
     {
       "id": "TC4.4",
       "domain_id": "TC4",
       "name": "Investigate the problem",
+      "name_vi": "Tổ chức hoạt động nghiên cứu và khám phá vấn đề",
       "guiding_question": "I can use the backwards design process to deconstruct my culminating task and to design learning experiences that allow my students to investigate the problem from a variety of perspectives in an authentic way.",
+      "guiding_question_vi": "Tôi áp dụng thiết kế bài giảng ngược (backwards design) để học sinh khám phá vấn đề từ nhiều góc nhìn đa chiều một cách thực tế.",
       "sort_order": 5
     },
     {
       "id": "TC4.5",
       "domain_id": "TC4",
       "name": "Impact on authentic audience",
+      "name_vi": "Tạo tác động thực tế tới đối tượng thụ hưởng",
       "guiding_question": "I can support my students in applying their learning to make a real impact on an authentic audience.",
+      "guiding_question_vi": "Tôi hướng dẫn học sinh ứng dụng kiến thức đã học để mang lại giá trị thực tế cho cộng đồng hoặc khán giả mục tiêu.",
       "sort_order": 6
     },
     {
       "id": "TC4.6",
       "domain_id": "TC4",
       "name": "Designing for daily facilitation",
+      "name_vi": "Thiết kế kế hoạch điều phối và tổ chức dạy học hằng ngày",
       "guiding_question": "I can use multiple forms of data to inform my daily facilitation plan and to design activities and mini-lessons that meet the individual needs of my students.",
+      "guiding_question_vi": "Tôi dùng dữ liệu học tập hằng ngày để điều chỉnh hoạt động và thiết kế các bài học nhỏ (mini-lessons) phù hợp nhu cầu từng học sinh.",
       "sort_order": 7
     },
     {
       "id": "TC5",
       "domain_id": "TC5",
       "name": "TC.5 Facilitating Personalized Learning",
+      "name_vi": "TC.5 Tổ Chức Học Tập Cá Nhân Hóa",
       "guiding_question": "",
+      "guiding_question_vi": "",
       "sort_order": 1
     },
     {
       "id": "TC5.1",
       "domain_id": "TC5",
       "name": "Safe, structured, and flexible learning environment",
+      "name_vi": "Môi trường học tập an toàn, có cấu trúc và linh hoạt",
       "guiding_question": "I can establish a safe, structured, and flexible learning environment for a diverse population of students.",
+      "guiding_question_vi": "Tôi kiến tạo không gian lớp học an toàn, nề nếp nhưng linh hoạt, tôn trọng sự đa dạng của mọi học sinh.",
       "sort_order": 2
     },
     {
       "id": "TC5.2",
       "domain_id": "TC5",
       "name": "Performance-based and formative assessment aligned to the competencies and continua",
+      "name_vi": "Đánh giá quá trình và đánh giá thực hiện dựa trên chuẩn năng lực",
       "guiding_question": "I can communicate clear and measurable learning targets and outcomes and design performance-based and formative assessments aligned to the competencies and continua.",
+      "guiding_question_vi": "Tôi truyền đạt mục tiêu bài học rõ ràng và thiết kế các hình thức đánh giá thường xuyên bám sát khung năng lực.",
       "sort_order": 3
     },
     {
       "id": "TC5.3",
       "domain_id": "TC5",
       "name": "Higher level thinking and high quality content",
+      "name_vi": "Phát triển tư duy bậc cao và nội dung bài học chất lượng",
       "guiding_question": "I can engage students in higher level thinking, questioning, and synthesis through high quality, meaningful, and relevant content presented from multiple perspectives.",
+      "guiding_question_vi": "Tôi rèn luyện cho học sinh năng lực phản biện, tổng hợp và tư duy sâu thông qua nội dung học tập chất lượng, đa chiều.",
       "sort_order": 4
     },
     {
       "id": "TC5.4",
       "domain_id": "TC5",
       "name": "Scaffolding and differentiation",
+      "name_vi": "Hệ thống giàn giáo hỗ trợ và phân hóa dạy học",
       "guiding_question": "I can set rigorous expectations for students while providing scaffolds and supports so that students across all differences can access the learning.",
+      "guiding_question_vi": "Tôi đặt chuẩn đầu ra cao đồng thời cung cấp các công cụ trợ giúp (scaffolding) để học sinh ở mọi trình độ đều tiếp cận được.",
       "sort_order": 5
     },
     {
       "id": "TC5.5",
       "domain_id": "TC5",
       "name": "Personalization",
+      "name_vi": "Cá nhân hóa trải nghiệm học tập",
       "guiding_question": "I can personalize learning for students by tailoring tasks to students' levels, needs, and interests, by providing cognitive choice, and by encouraging students to take ownership of their learning.",
+      "guiding_question_vi": "Tôi cá nhân hóa bài học theo nhu cầu, sở thích của học sinh, trao quyền lựa chọn và khuyến khích các em tự làm chủ việc học.",
       "sort_order": 6
     },
     {
       "id": "TC5.6",
       "domain_id": "TC5",
       "name": "High quality work through feedback and revision",
+      "name_vi": "Nâng cao chất lượng sản phẩm qua phản hồi và chỉnh sửa",
       "guiding_question": "I can set expectations for high quality work products through the use of self-assessment, goal-setting, feedback, and revision cycles.",
+      "guiding_question_vi": "Tôi rèn luyện tiêu chuẩn cao cho sản phẩm học tập thông qua chu trình tự đánh giá, góp ý phản hồi và hoàn thiện liên tục.",
       "sort_order": 7
     },
     {
       "id": "TC5.7",
       "domain_id": "TC5",
       "name": "Use systems to organize, manage, and analyze data to inform instruction",
+      "name_vi": "Ứng dụng hệ thống dữ liệu để quản lý và tối ưu hóa giảng dạy",
       "guiding_question": "I can manage, incorporate, collect, and analyze a variety of data to improve my practice and to improve engagement and outcomes for all students.",
+      "guiding_question_vi": "Tôi thu thập, quản lý và phân tích đa dạng dữ liệu để cải tiến phương pháp dạy học và nâng cao kết quả của học sinh.",
       "sort_order": 8
     },
     {
       "id": "TC5.8",
       "domain_id": "TC5",
       "name": "Enhance learning with digital tools",
+      "name_vi": "Tăng cường năng lực số và ứng dụng công nghệ hiện đại",
       "guiding_question": "I can use technology to enhance teaching and learning, build digital fluency, and create new products.",
+      "guiding_question_vi": "Tôi sử dụng công nghệ để nâng cao chất lượng dạy học, phát triển tư duy công nghệ và tạo ra các sản phẩm sáng tạo.",
       "sort_order": 9
     }
   ],

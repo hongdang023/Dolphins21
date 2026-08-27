@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dolphins21 – Teacher Competency Growth OS</title>
+  <title>Dolphins21 – Teacher Growth OS</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
   <style>
@@ -42,70 +42,95 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
-        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
-        <li><a href="checkin.html" class="btn btn-primary btn-sm">⚡ Check-in</a></li>
+        <li><a href="dashboard.html" class="nav-link" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
     <section class="hero-section">
-      <span class="eyebrow">Hệ thống phát triển năng lực giáo viên</span>
-      <h1 class="hero-title">Đo lường để <span>hành động</span>.<br>Chứng minh bằng <span>dữ liệu thực</span>.</h1>
-      <p class="page-subtitle" style="margin: 0 auto 24px;">
-        Đánh giá năng lực giảng dạy theo khung <strong>Building 21</strong>, lập mục tiêu SMART và lưu trữ hồ sơ bằng chứng tiến bộ hàng tuần.
+      <span class="eyebrow" id="heroEyebrow">Teacher Growth OS</span>
+      <h1 class="hero-title" id="heroTitle">Đo lường để <span>hành động</span>.<br>Chứng minh bằng <span>Evidence</span>.</h1>
+      <p class="page-subtitle" id="heroSubtitle" style="margin: 0 auto 24px;">
+        Đánh giá năng lực theo khung Building 21, lập mục tiêu SMART và lưu trữ Evidence lớp học.
       </p>
-      <div style="display: flex; gap: 12px; justify-content: center;">
-        <a href="onboarding.html" class="btn btn-primary" style="padding: 12px 28px; font-size: 16px;">Bắt đầu thiết lập hồ sơ →</a>
-        <a href="assess.html" class="btn btn-secondary" style="padding: 12px 24px;">Tự đánh giá 5 Domains</a>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="onboarding.html" class="btn btn-primary" id="btnHeroOnboard" style="padding: 12px 28px; font-size: 16px;">Tạo hồ sơ →</a>
+        <a href="assess.html" class="btn btn-secondary" id="btnHeroAssess" style="padding: 12px 24px;">Tự đánh giá</a>
       </div>
     </section>
 
     <div class="next-action-banner">
       <div>
-        <span class="eyebrow" style="margin-bottom: 2px;">Vòng lặp trách nhiệm</span>
-        <div class="next-action-text">Bạn đã sẵn sàng cho chu kỳ đánh giá mới? Hãy chọn Domain bắt đầu ngay.</div>
+        <span class="eyebrow" style="margin-bottom: 2px;" id="bannerEyebrow">Action Loop</span>
+        <div class="next-action-text" id="bannerText">Sẵn sàng cho chu kỳ mới? Bắt đầu đánh giá ngay hôm nay.</div>
       </div>
-      <a href="assess.html" class="btn btn-primary btn-sm">Bắt đầu đánh giá →</a>
+      <a href="assess.html" class="btn btn-primary btn-sm" id="bannerBtn">Bắt đầu ngay →</a>
     </div>
 
     <div class="feature-grid">
       <div class="surface-card">
         <div class="feature-icon">🎯</div>
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Outcome-Based</h3>
-        <p style="font-size: 14px; color: var(--muted-foreground);">
-          Không đo số giờ học tập mà đo lường sự thay đổi hành vi thực tế của giáo viên và tác động lên học sinh.
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;" id="f1Title">Outcome-Based</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground);" id="f1Desc">
+          Đo lường sự thay đổi hành vi thực tế của giáo viên và tác động lên học sinh.
         </p>
       </div>
 
       <div class="surface-card">
         <div class="feature-icon">📊</div>
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Radar Chart & Trends</h3>
-        <p style="font-size: 14px; color: var(--muted-foreground);">
-          Trực quan hóa 5 nhóm năng lực TC.1 - TC.5. So sánh trước/sau qua các snapshots thời gian.
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;" id="f2Title">Radar Chart</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground);" id="f2Desc">
+          Trực quan hóa 5 nhóm năng lực TC.1 - TC.5. So sánh tiến bộ qua Snapshots.
         </p>
       </div>
 
       <div class="surface-card">
         <div class="feature-icon">📁</div>
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Evidence Vault</h3>
-        <p style="font-size: 14px; color: var(--muted-foreground);">
-          Ghi lại minh chứng, bài tập, hình ảnh từ lớp học cho từng Indicator cụ thể.
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;" id="f3Title">Evidence Vault</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground);" id="f3Desc">
+          Lưu trữ minh chứng, phản hồi học sinh và bài tập thực hành theo từng Indicator.
         </p>
       </div>
 
       <div class="surface-card">
         <div class="feature-icon">⚡</div>
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Weekly Habit Loop</h3>
-        <p style="font-size: 14px; color: var(--muted-foreground);">
-          Check-in nhanh dưới 5 phút mỗi tuần. Duy trì streak và cập nhật các cột mốc đã hoàn thành.
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;" id="f4Title">Weekly Streak</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground);" id="f4Desc">
+          Check-in dưới 5 phút mỗi tuần để cập nhật tiến độ và duy trì nhịp điệu phản tư.
         </p>
       </div>
     </div>
   </main>
+
+  <script src="js/i18n.js"></script>
+  <script>
+    function updateHeroContent() {
+      const isEn = I18N.getLang() === 'en';
+      document.getElementById('heroEyebrow').textContent = isEn ? 'Teacher Growth OS' : 'Teacher Growth OS';
+      document.getElementById('heroTitle').innerHTML = isEn ? 'Measure to <span>Act</span>.<br>Ground in <span>Evidence</span>.' : 'Đo lường để <span>hành động</span>.<br>Chứng minh bằng <span>Evidence</span>.';
+      document.getElementById('heroSubtitle').textContent = isEn ? 'Assess competencies with Building 21, set SMART goals, and log weekly classroom progress.' : 'Đánh giá năng lực theo khung Building 21, lập mục tiêu SMART và lưu trữ Evidence lớp học.';
+      document.getElementById('btnHeroOnboard').textContent = isEn ? 'Set up Profile →' : 'Tạo hồ sơ →';
+      document.getElementById('btnHeroAssess').textContent = isEn ? 'Self-Assess' : 'Tự đánh giá';
+      document.getElementById('bannerEyebrow').textContent = isEn ? 'Action Loop' : 'Action Loop';
+      document.getElementById('bannerText').textContent = isEn ? 'Ready for your next growth cycle? Start assessment now.' : 'Sẵn sàng cho chu kỳ mới? Bắt đầu đánh giá ngay hôm nay.';
+      document.getElementById('bannerBtn').textContent = isEn ? 'Start Now →' : 'Bắt đầu ngay →';
+      document.getElementById('f1Title').textContent = isEn ? 'Outcome-Based' : 'Outcome-Based';
+      document.getElementById('f1Desc').textContent = isEn ? 'Measures observable shifts in teacher practice and impact on students.' : 'Đo lường sự thay đổi hành vi thực tế của giáo viên và tác động lên học sinh.';
+      document.getElementById('f2Title').textContent = isEn ? 'Radar Chart' : 'Radar Chart';
+      document.getElementById('f2Desc').textContent = isEn ? 'Visualize competencies across TC.1 - TC.5. Compare progress snapshots.' : 'Trực quan hóa 5 nhóm năng lực TC.1 - TC.5. So sánh tiến bộ qua Snapshots.';
+      document.getElementById('f3Title').textContent = isEn ? 'Evidence Vault' : 'Evidence Vault';
+      document.getElementById('f3Desc').textContent = isEn ? 'Log authentic classroom artifacts and student feedback for each indicator.' : 'Lưu trữ minh chứng, phản hồi học sinh và bài tập thực hành theo từng Indicator.';
+      document.getElementById('f4Title').textContent = isEn ? 'Weekly Streak' : 'Weekly Streak';
+      document.getElementById('f4Desc').textContent = isEn ? 'Check-in under 5 minutes weekly to update progress and maintain rhythm.' : 'Check-in dưới 5 phút mỗi tuần để cập nhật tiến độ và duy trì nhịp điệu phản tư.';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateHeroContent();
+      window.addEventListener('languageChanged', updateHeroContent);
+    });
+  </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chi Tiết Competency – Dolphins21</title>
+  <title>Dolphins21 – Competency Details</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
@@ -15,31 +15,29 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
-        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+        <li><a href="dashboard.html" class="nav-link" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link active" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
     <div style="margin-bottom: 24px;">
-      <a href="focus.html" style="color: var(--muted-foreground); text-decoration: none; font-size: 14px; font-weight: 600;">← Quay lại danh sách Focus</a>
+      <a href="focus.html" style="color: var(--muted-foreground); text-decoration: none; font-size: 14px; font-weight: 600;" data-i18n="btn_back_focus">← Về Focus</a>
       <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
         <div>
           <span class="eyebrow" id="compDomainBadge">Domain --</span>
           <h1 class="page-title" id="compTitle">Competency Details</h1>
           <p class="page-subtitle" id="compGuiding"></p>
         </div>
-        <button id="btnPinToggle" class="btn btn-secondary">☆ Ghim vào Focus</button>
+        <button id="btnPinToggle" class="btn btn-secondary">☆ Ghim Focus</button>
       </div>
     </div>
 
     <!-- Indicators List with Action -->
     <div class="surface-card" style="margin-bottom: 24px;">
-      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Các Indicators & Rubric</h3>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" id="rubricSectionTitle">Indicators & Rubric</h3>
       <div id="indicatorsContainer" style="display: flex; flex-direction: column; gap: 20px;"></div>
     </div>
 
@@ -47,18 +45,18 @@
     <div class="grid-2">
       <!-- Goals -->
       <div class="surface-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-size: 18px; font-weight: 800;">Mục Tiêu (Goals) Cho Năng Lực Này</h3>
-          <button id="btnOpenGoalModal" class="btn btn-primary btn-sm">+ Đặt mục tiêu SMART</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+          <h3 style="font-size: 18px; font-weight: 800;" data-i18n="goal_title">Mục tiêu</h3>
+          <button id="btnOpenGoalModal" class="btn btn-primary btn-sm" data-i18n="btn_create_goal">+ Tạo Mục Tiêu</button>
         </div>
         <div id="compGoalsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
       </div>
 
       <!-- Evidence -->
       <div class="surface-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-size: 18px; font-weight: 800;">Minh Chứng (Evidence)</h3>
-          <button id="btnOpenEvidenceModal" class="btn btn-primary btn-sm">+ Ghi minh chứng</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+          <h3 style="font-size: 18px; font-weight: 800;" data-i18n="evidence_title">Evidence Vault</h3>
+          <button id="btnOpenEvidenceModal" class="btn btn-primary btn-sm" data-i18n="btn_add_evidence">+ Thêm Evidence</button>
         </div>
         <div id="compEvidenceList" style="display: flex; flex-direction: column; gap: 12px;"></div>
       </div>
@@ -67,6 +65,7 @@
 
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     let compId = 'TC1.1';
 
@@ -84,8 +83,9 @@
       });
 
       document.getElementById('btnOpenGoalModal').addEventListener('click', () => {
-        const target = prompt('Nhập Stage mục tiêu bạn muốn đạt (từ 1 đến 4):', '3');
-        const deadline = prompt('Nhập hạn chót (YYYY-MM-DD):', '2026-12-31');
+        const isEn = I18N.getLang() === 'en';
+        const target = prompt(isEn ? 'Target Stage (1-4):' : 'Stage mục tiêu (1-4):', '3');
+        const deadline = prompt(isEn ? 'Deadline (YYYY-MM-DD):' : 'Hạn chót (YYYY-MM-DD):', '2026-12-31');
         if (target && deadline) {
           DolphinsStore.saveGoal({
             indicator_id: `${compId}-IND-1`,
@@ -95,7 +95,7 @@
             deadline: deadline,
             status: 'active',
             milestones: [
-              { id: 'ms_' + Date.now() + '_1', label: `Áp dụng cải tiến vào bài giảng thực tế`, due_date: deadline, completed: 0 }
+              { id: 'ms_' + Date.now() + '_1', label: isEn ? 'Apply new practice in 2 classes' : 'Thực hành thử nghiệm phương pháp mới', due_date: deadline, completed: 0 }
             ]
           });
           renderCompDetail();
@@ -103,7 +103,8 @@
       });
 
       document.getElementById('btnOpenEvidenceModal').addEventListener('click', () => {
-        const content = prompt('Nhập nội dung minh chứng thực tế từ lớp học:');
+        const isEn = I18N.getLang() === 'en';
+        const content = prompt(isEn ? 'Describe authentic classroom action:' : 'Nhập chi tiết Evidence từ lớp học:');
         if (content) {
           DolphinsStore.saveEvidence({
             indicator_id: `${compId}-IND-1`,
@@ -115,45 +116,57 @@
           renderCompDetail();
         }
       });
+
+      window.addEventListener('languageChanged', renderCompDetail);
     });
 
     function renderCompDetail() {
-      const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId, domain_id: 'TC1' };
-      document.getElementById('compDomainBadge').textContent = `Domain ${comp.domain_id} · ${comp.id}`;
-      document.getElementById('compTitle').textContent = comp.name;
-      document.getElementById('compGuiding').textContent = comp.guiding_question ? `"${comp.guiding_question}"` : '';
-
+      const isEn = I18N.getLang() === 'en';
+      const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId, domain_id: 'TC.1' };
       const focus = DolphinsStore.getFocus();
       const isPinned = focus.includes(compId);
+
+      document.getElementById('rubricSectionTitle').textContent = isEn ? 'Indicators & Rubrics' : 'Indicators & Rubric';
+      document.getElementById('compDomainBadge').textContent = `Domain ${comp.domain_id}`;
+      document.getElementById('compTitle').textContent = `${comp.id} · ${comp.name}`;
+      document.getElementById('compGuiding').textContent = comp.guiding_question ? `"${comp.guiding_question}"` : '';
+
       const pinBtn = document.getElementById('btnPinToggle');
-      pinBtn.textContent = isPinned ? '★ Đang ghim Focus' : '☆ Ghim vào Focus';
+      pinBtn.textContent = isPinned ? (isEn ? '★ Pinned' : '★ Đã ghim') : (isEn ? '☆ Pin Focus' : '☆ Ghim Focus');
       pinBtn.className = isPinned ? 'btn btn-primary' : 'btn btn-secondary';
 
       // Render Indicators
-      const indList = window.BUILDING21_DATA.indicators.filter(ind => ind.competency_id === compId);
       const ratings = DolphinsStore.getRatings();
-
+      const indList = window.BUILDING21_DATA.indicators.filter(ind => ind.competency_id === compId);
       const indContainer = document.getElementById('indicatorsContainer');
+
       indContainer.innerHTML = indList.map(ind => {
-        const rating = ratings[ind.id] ? ratings[ind.id].stage : null;
+        const currentStage = ratings[ind.id] ? ratings[ind.id].stage : null;
         return `
-          <div style="border-top: 1px solid var(--border); padding-top: 16px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-              <strong>Chỉ số #${ind.indicator_index} (${ind.id})</strong>
-              ${rating ? `<span class="badge badge-stage-${rating}">Stage ${rating}</span>` : '<span class="badge" style="background:#f5f5f5;">Chưa đánh giá</span>'}
+          <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: #fff;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+              <h4 style="font-size: 15px; font-weight: 700;">${ind.id} · ${ind.name}</h4>
+              <span class="badge" style="background: ${currentStage ? 'var(--accent)' : 'var(--muted)'}; color: ${currentStage ? 'var(--primary)' : 'var(--muted-foreground)'};">
+                ${currentStage ? `Stage ${currentStage}` : (isEn ? 'Not assessed' : 'Chưa đánh giá')}
+              </span>
             </div>
-            <div class="rubric-grid">
-              <div class="rubric-stage-card ${rating === 1 ? 'selected' : ''}">
-                <div class="rubric-stage-title">Stage 1</div><div>${ind.rubric_stage1}</div>
+            <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 12px; font-style: italic;">"${ind.indicator_statement}"</p>
+            <div class="grid-4" style="gap: 8px;">
+              <div class="rubric-stage-card ${currentStage === 1 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 1)">
+                <div class="rubric-stage-header">Stage 1</div>
+                <div class="rubric-stage-body">${ind.rubric_stage1}</div>
               </div>
-              <div class="rubric-stage-card ${rating === 2 ? 'selected' : ''}">
-                <div class="rubric-stage-title">Stage 2</div><div>${ind.rubric_stage2}</div>
+              <div class="rubric-stage-card ${currentStage === 2 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 2)">
+                <div class="rubric-stage-header">Stage 2</div>
+                <div class="rubric-stage-body">${ind.rubric_stage2}</div>
               </div>
-              <div class="rubric-stage-card ${rating === 3 ? 'selected' : ''}">
-                <div class="rubric-stage-title">Stage 3</div><div>${ind.rubric_stage3}</div>
+              <div class="rubric-stage-card ${currentStage === 3 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 3)">
+                <div class="rubric-stage-header">Stage 3</div>
+                <div class="rubric-stage-body">${ind.rubric_stage3}</div>
               </div>
-              <div class="rubric-stage-card ${rating === 4 ? 'selected' : ''}">
-                <div class="rubric-stage-title">Stage 4</div><div>${ind.rubric_stage4}</div>
+              <div class="rubric-stage-card ${currentStage === 4 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 4)">
+                <div class="rubric-stage-header">Stage 4</div>
+                <div class="rubric-stage-body">${ind.rubric_stage4}</div>
               </div>
             </div>
           </div>
@@ -161,39 +174,38 @@
       }).join('');
 
       // Render Goals
-      const allGoals = DolphinsStore.getGoals();
-      const compGoals = allGoals.filter(g => g.competency_id === compId);
+      const compGoals = DolphinsStore.getGoals().filter(g => g.competency_id === compId);
       const goalsContainer = document.getElementById('compGoalsList');
       if (compGoals.length === 0) {
-        goalsContainer.innerHTML = '<p style="color: var(--muted-foreground); font-size: 14px;">Chưa có mục tiêu nào cho năng lực này.</p>';
+        goalsContainer.innerHTML = `<p style="font-size: 13px; color: var(--muted-foreground);">${isEn ? 'No goals for this competency yet.' : 'Chưa có mục tiêu cho năng lực này.'}</p>`;
       } else {
         goalsContainer.innerHTML = compGoals.map(g => `
-          <div style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md);">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-              <strong>Mục tiêu: Đạt Stage ${g.target_stage}</strong>
-              <span class="badge" style="background: var(--accent); color: var(--primary);">Hạn: ${g.deadline}</span>
-            </div>
-            <div style="font-size: 13px; color: var(--muted-foreground);">
-              ${g.milestones ? g.milestones.length : 0} milestones đã thiết lập
-            </div>
+          <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px;">
+            <div style="font-weight: 700; font-size: 14px;">${isEn ? 'Target: Stage' : 'Mục tiêu: Stage'} ${g.target_stage}</div>
+            <div style="font-size: 12px; color: var(--muted-foreground); margin-top: 2px;">${isEn ? 'Deadline' : 'Hạn chót'}: ${g.deadline}</div>
           </div>
         `).join('');
       }
 
       // Render Evidence
-      const allEvidence = DolphinsStore.getEvidence();
-      const compEvidence = allEvidence.filter(e => e.competency_id === compId);
+      const compEv = DolphinsStore.getEvidence().filter(e => e.competency_id === compId);
       const evContainer = document.getElementById('compEvidenceList');
-      if (compEvidence.length === 0) {
-        evContainer.innerHTML = '<p style="color: var(--muted-foreground); font-size: 14px;">Chưa có minh chứng nào được lưu.</p>';
+      if (compEv.length === 0) {
+        evContainer.innerHTML = `<p style="font-size: 13px; color: var(--muted-foreground);">${isEn ? 'No evidence recorded yet.' : 'Chưa có Evidence nào.'}</p>`;
       } else {
-        evContainer.innerHTML = compEvidence.map(e => `
-          <div style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--neutral-50);">
-            <div style="font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 4px;">${e.date}</div>
-            <p style="font-size: 13px; line-height: 1.4;">${e.content}</p>
+        evContainer.innerHTML = compEv.map(e => `
+          <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; font-size: 13px;">
+            <div style="font-size: 11px; color: var(--muted-foreground); margin-bottom: 4px;">${e.date}</div>
+            <div style="line-height: 1.5; color: var(--foreground);">${e.content}</div>
           </div>
         `).join('');
       }
+    }
+
+    function selectRatingDetail(indicatorId, stage) {
+      const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId);
+      DolphinsStore.saveRating(indicatorId, stage, compId, comp ? comp.domain_id : 'TC.1');
+      renderCompDetail();
     }
   </script>
 </body>

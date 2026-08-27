@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>So Sánh Snapshots – Dolphins21</title>
+  <title>Dolphins21 – Compare Snapshots</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,40 +16,38 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
-        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+        <li><a href="dashboard.html" class="nav-link active" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
     <div style="margin-bottom: 24px;">
-      <a href="dashboard.html" style="color: var(--muted-foreground); text-decoration: none; font-size: 14px; font-weight: 600;">← Quay lại Dashboard</a>
-      <h1 class="page-title" style="margin-top: 12px;">So Sánh Tiến Bộ Qua Các Snapshots</h1>
-      <p class="page-subtitle">Xem dữ liệu đối sánh Before vs. After trên biểu đồ Radar và bảng phân tích biến động điểm năng lực.</p>
+      <a href="dashboard.html" style="color: var(--muted-foreground); text-decoration: none; font-size: 14px; font-weight: 600;" data-i18n="btn_back_dashboard">← Về Tổng quan</a>
+      <h1 class="page-title" style="margin-top: 12px;" data-i18n="compare_title">So sánh Snapshots</h1>
+      <p class="page-subtitle" data-i18n="compare_subtitle">Xem đối sánh Before vs. After trên biểu đồ Radar.</p>
     </div>
 
     <!-- Snapshot Selector -->
     <div class="surface-card" style="margin-bottom: 24px;">
       <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 200px;">
-          <label class="form-label">Snapshot A (Gốc / Trước đó)</label>
+          <label class="form-label" data-i18n="compare_snap_a">Snapshot trước</label>
           <select id="selectSnapA" class="form-select"></select>
         </div>
         <div style="flex: 1; min-width: 200px;">
-          <label class="form-label">Snapshot B (Hiện tại / Sau đó)</label>
+          <label class="form-label" data-i18n="compare_snap_b">Snapshot sau / Hiện tại</label>
           <select id="selectSnapB" class="form-select"></select>
         </div>
-        <button id="btnCompare" class="btn btn-primary" style="margin-top: 22px;">So Sánh →</button>
+        <button id="btnCompare" class="btn btn-primary" style="margin-top: 22px;" data-i18n="compare_btn">So sánh →</button>
       </div>
     </div>
 
     <!-- Comparison Radar Chart -->
     <div class="surface-card" style="margin-bottom: 24px;">
-      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Biểu Đồ Chồng Radar (Overlay Comparison)</h3>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" data-i18n="compare_radar_title">Radar Chart Đối Sánh</h3>
       <div style="position: relative; height: 350px; width: 100%;">
         <canvas id="compareRadar"></canvas>
       </div>
@@ -58,28 +56,36 @@
 
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     let compareChart = null;
 
     document.addEventListener('DOMContentLoaded', () => {
+      initComparePage();
+      document.getElementById('btnCompare').addEventListener('click', renderComparison);
+      window.addEventListener('languageChanged', initComparePage);
+    });
+
+    function initComparePage() {
+      const isEn = I18N.getLang() === 'en';
       const snapshots = DolphinsStore.getSnapshots();
       const selA = document.getElementById('selectSnapA');
       const selB = document.getElementById('selectSnapB');
 
       if (snapshots.length === 0) {
-        // Create mock snapshot for first comparison
-        DolphinsStore.createSnapshot('Bản chụp khởi đầu');
+        DolphinsStore.createSnapshot(isEn ? 'Snapshot Baseline' : 'Snapshot khởi đầu');
       }
 
       const allSnaps = DolphinsStore.getSnapshots();
-      selA.innerHTML = allSnaps.map((s, idx) => `<option value="${s.id}">${s.label} (${new Date(s.created_at).toLocaleDateString('vi-VN')})</option>`).join('');
-      selB.innerHTML = `<option value="current">Điểm đánh giá hiện tại (Live)</option>` + selA.innerHTML;
+      const dateLocale = isEn ? 'en-US' : 'vi-VN';
+      selA.innerHTML = allSnaps.map(s => `<option value="${s.id}">${s.label} (${new Date(s.created_at).toLocaleDateString(dateLocale)})</option>`).join('');
+      selB.innerHTML = `<option value="current">${I18N.t('compare_current_live')}</option>` + selA.innerHTML;
 
-      document.getElementById('btnCompare').addEventListener('click', renderComparison);
       renderComparison();
-    });
+    }
 
     function renderComparison() {
+      const isEn = I18N.getLang() === 'en';
       const snapAId = document.getElementById('selectSnapA').value;
       const snapBId = document.getElementById('selectSnapB').value;
       const snapshots = DolphinsStore.getSnapshots();
@@ -101,7 +107,6 @@
         }
       }
 
-      // Calculate domains avg
       const calcDomainAvg = (ratingsObj) => {
         return window.BUILDING21_DATA.domains.map(d => {
           const dIndicators = window.BUILDING21_DATA.indicators.filter(ind => {
@@ -122,23 +127,25 @@
       const dataA = calcDomainAvg(ratingsA);
       const dataB = calcDomainAvg(ratingsB);
 
+      const radarLabels = ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'];
+
       const ctx = document.getElementById('compareRadar').getContext('2d');
       if (compareChart) compareChart.destroy();
 
       compareChart = new Chart(ctx, {
         type: 'radar',
         data: {
-          labels: ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'],
+          labels: radarLabels,
           datasets: [
             {
-              label: 'Snapshot A (Trước)',
+              label: isEn ? 'Snapshot A (Earlier)' : 'Snapshot A (Trước)',
               data: dataA,
               backgroundColor: 'rgba(148, 163, 184, 0.2)',
               borderColor: '#94a3b8',
               borderWidth: 2
             },
             {
-              label: 'Snapshot B (Sau)',
+              label: isEn ? 'Snapshot B (Later/Live)' : 'Snapshot B (Sau/Live)',
               data: dataB,
               backgroundColor: 'rgba(204, 78, 45, 0.25)',
               borderColor: '#cc4e2d',

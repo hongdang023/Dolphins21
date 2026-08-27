@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Tổng Quan – Dolphins21</title>
+  <title>Dolphins21 – Dashboard</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,60 +16,94 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
-        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
-        <li><a href="export.html" class="nav-link">Xuất dữ liệu</a></li>
-        <li><a href="checkin.html" class="btn btn-primary btn-sm">⚡ Check-in</a></li>
+        <li><a href="dashboard.html" class="nav-link active" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
+    <div id="sampleDataBanner" class="sample-data-banner" style="display: none;">
+      <span id="sampleBannerText">💡 Bạn đang xem dữ liệu mẫu giáo viên đổi mới.</span>
+      <button id="btnClearSample" class="btn btn-secondary btn-sm" style="background:#fff; color:#92400e; border:none; padding:4px 10px; font-size:12px;" data-i18n="btn_clear_sample">Dữ liệu thật của tôi</button>
+    </div>
+
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
       <div>
-        <span class="eyebrow" id="teacherGreeting">Teacher Growth Overview</span>
-        <h1 class="page-title" style="margin-bottom: 4px;">Competency Dashboard</h1>
+        <span class="eyebrow" id="teacherGreeting" data-i18n="dash_greeting">Lộ trình phát triển</span>
+        <h1 class="page-title" style="margin-bottom: 4px;" data-i18n="dash_title">Tổng quan</h1>
         <p style="color: var(--muted-foreground); font-size: 14px;" id="teacherProfileSubtitle">Giáo viên: -- | Môn: --</p>
       </div>
-      <div style="display: flex; gap: 10px;">
-        <a href="assess.html" class="btn btn-primary">Tiếp tục đánh giá →</a>
-        <a href="dashboard-compare.html" class="btn btn-secondary">So sánh Snapshots</a>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="assess.html" class="btn btn-primary hotspot-beacon" id="btnContinueAssess" data-i18n="btn_continue_assess">Đánh giá tiếp →</a>
+        <a href="dashboard-compare.html" class="btn btn-secondary" id="btnCompareSnapshots" data-i18n="btn_compare_snapshots">So sánh Snapshots</a>
       </div>
     </div>
 
     <!-- Quick Stats -->
     <div class="grid-5" style="margin-bottom: 24px;">
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Tiến độ đánh giá</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">
+          <span data-i18n="dash_stat_progress">Tiến độ</span>
+          <span class="info-icon">?
+            <div class="tooltip-box">
+              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipProgressHeader">TIẾN ĐỘ ĐÁNH GIÁ</span></div>
+              <div class="tooltip-desc" id="tipProgressDesc">Tỷ lệ các chỉ số và tiêu chí thuộc khung Building 21 đã được bạn hoàn thành tự đánh giá.</div>
+              <div class="tooltip-divider"></div>
+              <div class="tooltip-value-title" id="tipProgressHelpTitle">TRANG NÀY GIÚP GÌ CHO TÔI?</div>
+              <div class="tooltip-value-desc" id="tipProgressHelpDesc">Nhìn thấy mức độ bao phủ toàn diện của hồ sơ chuyên môn và số lượng tiêu chí còn lại cần tiếp tục đánh giá.</div>
+            </div>
+          </span>
+        </span>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statProgress">0 / 117</div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="statProgressBar" style="width: 0%;"></div></div>
       </div>
 
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Điểm Stage TB</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">
+          <span data-i18n="dash_stat_avg">Điểm TB</span>
+          <span class="info-icon">?
+            <div class="tooltip-box">
+              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipAvgHeader">ĐIỂM STAGE TRUNG BÌNH</span></div>
+              <div class="tooltip-desc" id="tipAvgDesc">Điểm số trung bình cộng cấp độ hiện tại (Stage 1 đến 4) tính trên các tiêu chí bạn đã đánh giá.</div>
+              <div class="tooltip-divider"></div>
+              <div class="tooltip-value-title" id="tipAvgHelpTitle">TRANG NÀY GIÚP GÌ CHO TÔI?</div>
+              <div class="tooltip-value-desc" id="tipAvgHelpDesc">Theo dõi sự dịch chuyển thực tế từ mức Làm quen (Stage 1) lên mức Tự chủ (Stage 3) và Dẫn dắt (Stage 4).</div>
+            </div>
+          </span>
+        </span>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0; color: var(--primary);" id="statAvgStage">0.0</div>
-        <span style="font-size: 12px; color: var(--muted-foreground);">trên thang điểm 4.0</span>
+        <span style="font-size: 12px; color: var(--muted-foreground);" data-i18n="dash_stat_scale">thang điểm 4.0</span>
       </div>
 
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Weekly Streak</span>
-        <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statStreak">0 tuần 🔥</div>
-        <span style="font-size: 12px; color: var(--muted-foreground);">Duy trì liên tục</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">
+          <span data-i18n="dash_stat_streak">Streak</span>
+          <span class="info-icon">?
+            <div class="tooltip-box">
+              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipStreakHeader">WEEKLY STREAK</span></div>
+              <div class="tooltip-desc" id="tipStreakDesc">Số tuần liên tiếp bạn duy trì việc tự đánh giá, thêm bằng chứng hoặc thực hiện check-in định kỳ.</div>
+              <div class="tooltip-divider"></div>
+              <div class="tooltip-value-title" id="tipStreakHelpTitle">TRANG NÀY GIÚP GÌ CHO TÔI?</div>
+              <div class="tooltip-value-desc" id="tipStreakHelpDesc">Xây dựng thói quen phản tư liên tục và duy trì cam kết phát triển bản thân đều đặn mỗi tuần.</div>
+            </div>
+          </span>
+        </span>
+        <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statStreak">0 tuần ✨</div>
+        <span style="font-size: 12px; color: var(--muted-foreground);" id="streakSubtext">Duy trì đều đặn</span>
       </div>
 
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Mục tiêu Active</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;" data-i18n="dash_stat_goals">Mục tiêu</span>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statGoals">0</div>
-        <a href="goals.html" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 600;">Xem chi tiết →</a>
+        <a href="growth.html?tab=tabGoals" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 600;" data-i18n="btn_view_details">Chi tiết →</a>
       </div>
 
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Minh chứng (Evidence)</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;" data-i18n="dash_stat_evidence">Evidence</span>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statEvidence">0</div>
-        <a href="evidence.html" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 600;">Xem Vault →</a>
+        <a href="growth.html?tab=tabEvidence" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 600;" data-i18n="btn_view_vault">Xem Vault →</a>
       </div>
     </div>
 
@@ -77,16 +111,16 @@
     <div class="next-action-banner" id="nextActionBox">
       <div>
         <span class="eyebrow" style="margin-bottom: 2px;">Action over Insight</span>
-        <div class="next-action-text" id="nextActionText">Đang tải hành động đề xuất...</div>
+        <div class="next-action-text" id="nextActionText">Đang tải gợi ý hành động...</div>
       </div>
-      <a href="assess.html" class="btn btn-primary btn-sm" id="nextActionBtn">Thực hiện ngay →</a>
+      <a href="assess.html" class="btn btn-primary btn-sm" id="nextActionBtn" data-i18n="btn_action_now">Thực hiện ngay →</a>
     </div>
 
     <!-- Radar Chart & Pinned Focus Grid -->
     <div class="grid-2" style="margin-bottom: 32px;">
       <!-- Chart -->
       <div class="surface-card">
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Biểu Đồ Năng Lực 5 Trục (Radar Chart)</h3>
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" data-i18n="dash_radar_title">Radar Chart</h3>
         <div style="position: relative; height: 320px; width: 100%;">
           <canvas id="competencyRadar"></canvas>
         </div>
@@ -95,8 +129,8 @@
       <!-- Focus Competencies -->
       <div class="surface-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-size: 18px; font-weight: 800;">Năng Lực Đang Focus (Ưu tiên)</h3>
-          <a href="focus.html" class="btn btn-secondary btn-sm">Quản lý Focus</a>
+          <h3 style="font-size: 18px; font-weight: 800;" data-i18n="focus_pinned_title">📌 Pinned Focus</h3>
+          <a href="growth.html?tab=tabFocus" class="btn btn-secondary btn-sm" data-i18n="btn_view_details">Chi tiết →</a>
         </div>
         <div id="focusList" style="display: flex; flex-direction: column; gap: 12px;">
           <!-- Render dynamically -->
@@ -106,7 +140,7 @@
 
     <!-- Domains Progress Breakdown -->
     <div class="surface-card">
-      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Tiến Độ Chi Tiết Theo 5 Domains</h3>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" id="domainsBreakdownTitle">Tiến độ 5 Domains</h3>
       <div id="domainsGrid" class="grid-5">
         <!-- Render 5 domains dynamically -->
       </div>
@@ -115,11 +149,42 @@
 
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    let radarChartInstance = null;
+
+    function renderDashboard() {
+      const isEn = I18N.getLang() === 'en';
       const profile = DolphinsStore.getProfile();
+      
+      const teacherLabel = isEn ? 'Teacher' : 'Giáo viên';
+      const subjectLabel = isEn ? 'Subject' : 'Môn';
+      const schoolLabel = isEn ? 'School' : 'Đơn vị';
+      const defaultSchool = isEn ? 'Dolphins Academy' : 'Dolphins';
+
       document.getElementById('teacherProfileSubtitle').textContent = 
-        `Giáo viên: ${profile.name || 'Thầy/Cô'} | Môn: ${profile.subject || 'Chưa cập nhật'} | Đơn vị: ${profile.school || 'Dolphins'}`;
+        `${teacherLabel}: ${profile.name || (isEn ? 'Educator' : 'Thầy/Cô')} | ${subjectLabel}: ${profile.subject || (isEn ? 'Not set' : 'Chưa cập nhật')} | ${schoolLabel}: ${profile.school || defaultSchool}`;
+
+      document.getElementById('domainsBreakdownTitle').textContent = isEn ? 'Progress by 5 Domains' : 'Tiến độ 5 Domains';
+      document.getElementById('streakSubtext').textContent = isEn ? 'Active streak' : 'Duy trì đều đặn';
+      document.getElementById('sampleBannerText').textContent = isEn ? '💡 You are viewing sample data of an innovative educator.' : '💡 Bạn đang xem dữ liệu mẫu giáo viên đổi mới.';
+      document.getElementById('btnClearSample').textContent = isEn ? 'My Real Data' : 'Dữ liệu thật của tôi';
+
+      // 2-tier Tooltips Localization
+      document.getElementById('tipProgressHeader').textContent = isEn ? 'ASSESSMENT PROGRESS' : 'TIẾN ĐỘ ĐÁNH GIÁ';
+      document.getElementById('tipProgressDesc').textContent = isEn ? 'Percentage of indicators completed under Building 21 rubric.' : 'Tỷ lệ các chỉ số và tiêu chí thuộc khung Building 21 đã được bạn hoàn thành tự đánh giá.';
+      document.getElementById('tipProgressHelpTitle').textContent = isEn ? 'HOW DOES THIS HELP ME?' : 'TRANG NÀY GIÚP GÌ CHO TÔI?';
+      document.getElementById('tipProgressHelpDesc').textContent = isEn ? 'Track professional coverage and identify remaining growth indicators.' : 'Nhìn thấy mức độ bao phủ toàn diện của hồ sơ chuyên môn và số lượng tiêu chí còn lại cần tiếp tục đánh giá.';
+
+      document.getElementById('tipAvgHeader').textContent = isEn ? 'AVERAGE STAGE' : 'ĐIỂM STAGE TRUNG BÌNH';
+      document.getElementById('tipAvgDesc').textContent = isEn ? 'Arithmetic mean of assessed stages across all evaluated indicators.' : 'Điểm số trung bình cộng cấp độ hiện tại (Stage 1 đến 4) tính trên các tiêu chí bạn đã đánh giá.';
+      document.getElementById('tipAvgHelpTitle').textContent = isEn ? 'HOW DOES THIS HELP ME?' : 'TRANG NÀY GIÚP GÌ CHO TÔI?';
+      document.getElementById('tipAvgHelpDesc').textContent = isEn ? 'Monitor measurable progression towards Proficient (Stage 3) and Mentor (Stage 4).' : 'Theo dõi sự dịch chuyển thực tế từ mức Làm quen (Stage 1) lên mức Tự chủ (Stage 3) và Dẫn dắt (Stage 4).';
+
+      document.getElementById('tipStreakHeader').textContent = isEn ? 'WEEKLY STREAK' : 'WEEKLY STREAK';
+      document.getElementById('tipStreakDesc').textContent = isEn ? 'Consecutive weeks of self-assessment, evidence logging, or reflection.' : 'Số tuần liên tiếp bạn duy trì việc tự đánh giá, thêm bằng chứng hoặc thực hiện check-in định kỳ.';
+      document.getElementById('tipStreakHelpTitle').textContent = isEn ? 'HOW DOES THIS HELP ME?' : 'TRANG NÀY GIÚP GÌ CHO TÔI?';
+      document.getElementById('tipStreakHelpDesc').textContent = isEn ? 'Build an unshakeable habit of reflection and continuous improvement.' : 'Xây dựng thói quen phản tư liên tục và duy trì cam kết phát triển bản thân đều đặn mỗi tuần.';
 
       const ratings = DolphinsStore.getRatings();
       const ratedKeys = Object.keys(ratings);
@@ -142,7 +207,8 @@
       document.getElementById('statAvgStage').textContent = avg;
 
       // Stats
-      document.getElementById('statStreak').textContent = `${DolphinsStore.getStreak()} tuần 🔥`;
+      const streakCount = DolphinsStore.getStreak();
+      document.getElementById('statStreak').textContent = isEn ? `${streakCount} weeks ✨` : `${streakCount} tuần ✨`;
       document.getElementById('statGoals').textContent = DolphinsStore.getGoals().length;
       document.getElementById('statEvidence').textContent = DolphinsStore.getEvidence().length;
 
@@ -163,13 +229,17 @@
       });
 
       // Render Radar Chart
+      const radarLabels = ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'];
+
       const ctx = document.getElementById('competencyRadar').getContext('2d');
-      new Chart(ctx, {
+      if (radarChartInstance) radarChartInstance.destroy();
+
+      radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
-          labels: ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'],
+          labels: radarLabels,
           datasets: [{
-            label: 'Điểm Đánh Giá Hiện Tại',
+            label: isEn ? 'Current Assessment' : 'Điểm Đánh Giá',
             data: domainAvgs,
             backgroundColor: 'rgba(204, 78, 45, 0.2)',
             borderColor: '#cc4e2d',
@@ -195,10 +265,14 @@
 
       // Next action recommendation
       if (ratedKeys.length === 0) {
-        document.getElementById('nextActionText').textContent = 'Bạn chưa đánh giá năng lực nào. Hãy bắt đầu với Domain 1: Building Relationships!';
+        document.getElementById('nextActionText').textContent = isEn 
+          ? 'No competencies assessed yet. Start with Domain 1!' 
+          : 'Chưa đánh giá năng lực nào. Hãy bắt đầu với Domain 1!';
         document.getElementById('nextActionBtn').href = 'assess.html?domain=TC1';
       } else {
-        document.getElementById('nextActionText').textContent = 'Tiếp tục hoàn thiện các chỉ số còn lại hoặc ghi nhận bằng chứng (Evidence) cho tuần này.';
+        document.getElementById('nextActionText').textContent = isEn 
+          ? 'Continue completing indicators or log one classroom evidence note this week.' 
+          : 'Tiếp tục đánh giá các tiêu chí còn lại hoặc ghi 1 Evidence tuần này.';
         document.getElementById('nextActionBtn').href = 'assess.html';
       }
 
@@ -206,7 +280,7 @@
       const focusList = DolphinsStore.getFocus();
       const focusContainer = document.getElementById('focusList');
       if (focusList.length === 0) {
-        focusContainer.innerHTML = '<p style="color: var(--muted-foreground); font-size: 14px;">Chưa chọn năng lực nào để focus. Hãy vào mục Focus để chọn 2-3 năng lực ưu tiên.</p>';
+        focusContainer.innerHTML = `<p style="color: var(--muted-foreground); font-size: 14px;">${isEn ? 'No focus competencies selected. Choose priorities in Growth Plan.' : 'Chưa chọn năng lực Focus. Hãy chọn tiêu điểm trong Kế hoạch.'}</p>`;
       } else {
         focusContainer.innerHTML = focusList.map(compId => {
           const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId };
@@ -216,7 +290,7 @@
                 <span class="eyebrow" style="font-size: 11px; margin-bottom: 2px;">${comp.id}</span>
                 <div style="font-weight: 700; font-size: 14px;">${comp.name}</div>
               </div>
-              <a href="focus-detail.html?comp=${comp.id}" class="btn btn-secondary btn-sm">Chi tiết →</a>
+              <a href="focus-detail.html?comp=${comp.id}" class="btn btn-secondary btn-sm">${isEn ? 'Details →' : 'Chi tiết →'}</a>
             </div>
           `;
         }).join('');
@@ -232,10 +306,24 @@
               <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 8px;">${d.name}</h4>
               <div style="font-size: 20px; font-weight: 900; color: var(--primary);">${domainAvgs[idx]} / 4.0</div>
             </div>
-            <a href="assess.html?domain=${d.id}" class="btn btn-secondary btn-sm" style="margin-top: 12px; width: 100%;">Đánh giá →</a>
+            <a href="assess.html?domain=${d.id}" class="btn btn-secondary btn-sm" style="margin-top: 12px; width: 100%;">${isEn ? 'Assess →' : 'Đánh giá →'}</a>
           </div>
         `;
       }).join('');
+
+      // Sample data banner handling
+      if (DolphinsStore.isSampleDataLoaded()) {
+        document.getElementById('sampleDataBanner').style.display = 'flex';
+        document.getElementById('btnClearSample').addEventListener('click', () => {
+          DolphinsStore.clearSampleData();
+          window.location.reload();
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDashboard();
+      window.addEventListener('languageChanged', renderDashboard);
     });
   </script>
 </body>

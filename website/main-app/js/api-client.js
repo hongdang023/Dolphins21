@@ -52,17 +52,23 @@ window.DolphinsStore = {
     return this.get(this.KEYS.RATINGS, {});
   },
 
-  saveRating(indicatorId, stage, competencyId, domainId) {
+  saveRating(indicatorId, stage, competencyId, domainId, note = null) {
     const ratings = this.getRatings();
+    const existing = ratings[indicatorId] || {};
     ratings[indicatorId] = {
       indicator_id: indicatorId,
-      stage: parseInt(stage),
-      competency_id: competencyId,
-      domain_id: domainId,
+      stage: stage !== null ? parseInt(stage) : (existing.stage || 0),
+      competency_id: competencyId || existing.competency_id,
+      domain_id: domainId || existing.domain_id,
+      note: note !== null ? note : (existing.note || ''),
       updated_at: new Date().toISOString()
     };
     this.set(this.KEYS.RATINGS, ratings);
     return ratings[indicatorId];
+  },
+
+  saveRatingNote(indicatorId, note, competencyId, domainId) {
+    return this.saveRating(indicatorId, null, competencyId, domainId, note);
   },
 
   // Snapshots (Empty initial state)
@@ -166,5 +172,75 @@ window.DolphinsStore = {
   getStreak() {
     const logs = this.getWeeklyLogs();
     return logs.length;
+  },
+
+  // Sample Data Loader (A5 Guideline)
+  isSampleDataLoaded() {
+    return this.get('dolphins21_is_sample_data', false);
+  },
+
+  loadSampleData() {
+    // 1. Sample Profile
+    this.saveProfile({
+      name: 'Thầy Nguyễn Hoàng Nam',
+      subject: 'Toán học & STEM',
+      years_experience: 6,
+      school: 'Trường THCS-THPT Đổi Mới'
+    });
+
+    // 2. Sample Ratings
+    const sampleRatings = {
+      'TC1.1-IND-1': { indicator_id: 'TC1.1-IND-1', stage: 3, competency_id: 'TC1.1', domain_id: 'TC.1', updated_at: new Date().toISOString() },
+      'TC1.1-IND-2': { indicator_id: 'TC1.1-IND-2', stage: 3, competency_id: 'TC1.1', domain_id: 'TC.1', updated_at: new Date().toISOString() },
+      'TC1.2-IND-1': { indicator_id: 'TC1.2-IND-1', stage: 2, competency_id: 'TC1.2', domain_id: 'TC.1', updated_at: new Date().toISOString() },
+      'TC2.1-IND-1': { indicator_id: 'TC2.1-IND-1', stage: 4, competency_id: 'TC2.1', domain_id: 'TC.2', updated_at: new Date().toISOString() },
+      'TC3.1-IND-1': { indicator_id: 'TC3.1-IND-1', stage: 3, competency_id: 'TC3.1', domain_id: 'TC.3', updated_at: new Date().toISOString() },
+      'TC4.1-IND-1': { indicator_id: 'TC4.1-IND-1', stage: 2, competency_id: 'TC4.1', domain_id: 'TC.4', updated_at: new Date().toISOString() },
+      'TC5.1-IND-1': { indicator_id: 'TC5.1-IND-1', stage: 3, competency_id: 'TC5.1', domain_id: 'TC.5', updated_at: new Date().toISOString() }
+    };
+    this.set(this.KEYS.RATINGS, sampleRatings);
+
+    // 3. Sample Goals
+    const sampleGoals = [{
+      id: 'goal_sample_1',
+      indicator_id: 'TC1.2-IND-1',
+      competency_id: 'TC1.2',
+      current_stage: 2,
+      target_stage: 3,
+      deadline: '2026-10-15',
+      status: 'active',
+      milestones: [
+        { id: 'ms_s1', label: 'Áp dụng bảng khảo sát mức độ tiếp thu vào 3 tiết học tuần này', due_date: '2026-09-15', completed: 1, evidence_note: 'Đã khảo sát 72 học sinh khối 9' },
+        { id: 'ms_s2', label: 'Tùy biến bài giảng theo 2 nhóm trình độ sau khảo sát', due_date: '2026-10-01', completed: 0, evidence_note: '' }
+      ]
+    }];
+    this.set(this.KEYS.GOALS, sampleGoals);
+
+    // 4. Sample Evidence
+    const sampleEvidence = [{
+      id: 'ev_sample_1',
+      competency_id: 'TC1.2',
+      indicator_id: 'TC1.2-IND-1',
+      date: new Date().toISOString().split('T')[0],
+      content: 'Hình ảnh và dữ liệu thống kê từ phiếu phản hồi nhanh Google Forms cuối tiết Hình học không gian lớp 9A2. 85% học sinh nắm vững định lý sau hoạt động ghép nhóm.',
+      tags: ['TC1.2', 'Thực hành lớp học']
+    }];
+    this.set(this.KEYS.EVIDENCE, sampleEvidence);
+
+    // 5. Sample Focus
+    this.set(this.KEYS.FOCUS, ['TC1.2', 'TC4.1']);
+
+    this.set('dolphins21_is_sample_data', true);
+  },
+
+  clearSampleData() {
+    this.set(this.KEYS.PROFILE, { name: '', subject: '', years_experience: '', school: '' });
+    this.set(this.KEYS.RATINGS, {});
+    this.set(this.KEYS.SNAPSHOTS, []);
+    this.set(this.KEYS.GOALS, []);
+    this.set(this.KEYS.EVIDENCE, []);
+    this.set(this.KEYS.WEEKLY_LOGS, []);
+    this.set(this.KEYS.FOCUS, []);
+    this.set('dolphins21_is_sample_data', false);
   }
 };

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mục Tiêu SMART – Dolphins21</title>
+  <title>Dolphins21 – Goals</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
 </head>
@@ -15,11 +15,9 @@
         <span>Dolphins21</span>
       </a>
       <ul class="nav-links">
-        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
-        <li><a href="focus.html" class="nav-link">Focus</a></li>
-        <li><a href="goals.html" class="nav-link active">Mục tiêu</a></li>
-        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+        <li><a href="dashboard.html" class="nav-link" data-i18n="nav_dashboard">Tổng quan</a></li>
+        <li><a href="assess.html" class="nav-link" data-i18n="nav_assessment">Đánh giá</a></li>
+        <li><a href="growth.html" class="nav-link active" data-i18n="nav_growth">Kế hoạch</a></li>
       </ul>
     </div>
   </header>
@@ -27,11 +25,11 @@
   <main class="page-shell">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
       <div>
-        <span class="eyebrow">Goal Engine</span>
-        <h1 class="page-title">Mục Tiêu SMART & Milestones</h1>
-        <p class="page-subtitle">Biến đánh giá thành hành động có thời hạn và các cột mốc thực thi cụ thể.</p>
+        <span class="eyebrow" id="goalEyebrow">Action Engine</span>
+        <h1 class="page-title" data-i18n="goal_title">Mục tiêu</h1>
+        <p class="page-subtitle" data-i18n="goal_subtitle">Biến đánh giá thành hành động có thời hạn và cột mốc rõ ràng.</p>
       </div>
-      <button id="btnNewGoal" class="btn btn-primary">+ Tạo Mục Tiêu Mới</button>
+      <button id="btnNewGoal" class="btn btn-primary" data-i18n="btn_create_goal">+ Tạo Mục Tiêu</button>
     </div>
 
     <!-- Goals List -->
@@ -42,15 +40,17 @@
 
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       renderGoals();
 
       document.getElementById('btnNewGoal').addEventListener('click', () => {
-        const compId = prompt('Nhập mã Competency muốn đặt mục tiêu (VD: TC1.1, TC5.7):', 'TC1.1');
-        const target = prompt('Stage mục tiêu muốn đạt (1-4):', '3');
-        const deadline = prompt('Hạn chót (YYYY-MM-DD):', '2026-12-31');
-        const ms1 = prompt('Cột mốc tuần 1-2:', 'Nghiên cứu rubric và thử nghiệm phương pháp mới trong 2 tiết dạy');
+        const isEn = I18N.getLang() === 'en';
+        const compId = prompt(isEn ? 'Competency ID (e.g. TC1.1, TC5.7):' : 'Mã Competency (Ví dụ: TC1.1, TC5.7):', 'TC1.1');
+        const target = prompt(isEn ? 'Target Stage (1-4):' : 'Stage mục tiêu (1-4):', '3');
+        const deadline = prompt(isEn ? 'Deadline (YYYY-MM-DD):' : 'Hạn chót (YYYY-MM-DD):', '2026-12-31');
+        const ms1 = prompt(isEn ? 'Week 1 Milestone:' : 'Milestone tuần 1:', isEn ? 'Apply new technique in 2 classes' : 'Thực hành thử nghiệm phương pháp mới');
 
         if (compId && target && deadline) {
           DolphinsStore.saveGoal({
@@ -61,24 +61,32 @@
             deadline: deadline,
             status: 'active',
             milestones: [
-              { id: 'ms_' + Date.now() + '_1', label: ms1 || 'Thực hành thử nghiệm', due_date: deadline, completed: 0, evidence_note: '' },
-              { id: 'ms_' + Date.now() + '_2', label: 'Tự đánh giá lại và ghi nhận phản hồi học sinh', due_date: deadline, completed: 0, evidence_note: '' }
+              { id: 'ms_' + Date.now() + '_1', label: ms1 || (isEn ? 'Practice practice' : 'Thực hành thử nghiệm'), due_date: deadline, completed: 0, evidence_note: '' },
+              { id: 'ms_' + Date.now() + '_2', label: isEn ? 'Self-assess and record evidence' : 'Tự đánh giá lại và ghi nhận Evidence', due_date: deadline, completed: 0, evidence_note: '' }
             ]
           });
           renderGoals();
         }
       });
+
+      window.addEventListener('languageChanged', renderGoals);
     });
 
     function renderGoals() {
+      const isEn = I18N.getLang() === 'en';
+      document.getElementById('goalEyebrow').textContent = isEn ? 'Action Engine' : 'Hành động';
       const container = document.getElementById('goalsContainer');
       const goals = DolphinsStore.getGoals();
 
       if (goals.length === 0) {
         container.innerHTML = `
-          <div class="surface-card" style="text-align: center; padding: 48px 20px;">
-            <p style="color: var(--muted-foreground); margin-bottom: 16px;">Bạn chưa tạo mục tiêu phát triển nào.</p>
-            <button onclick="document.getElementById('btnNewGoal').click()" class="btn btn-primary">+ Tạo Mục Tiêu Đầu Tiên</button>
+          <div class="empty-state-box">
+            <span class="empty-state-icon">🎯</span>
+            <h3 class="empty-state-title">${I18N.t('goal_empty_title')}</h3>
+            <p class="empty-state-desc">${I18N.t('goal_empty_desc')}</p>
+            <button onclick="document.getElementById('btnNewGoal').click()" class="btn btn-primary">
+              ${I18N.t('btn_create_goal')}
+            </button>
           </div>
         `;
         return;
@@ -95,14 +103,14 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
               <div>
                 <span class="eyebrow">${comp.id}</span>
-                <h3 style="font-size: 20px; font-weight: 800;">Mục tiêu: Đạt Stage ${g.target_stage} (${comp.name})</h3>
+                <h3 style="font-size: 18px; font-weight: 800;">${isEn ? 'Target: Stage' : 'Mục tiêu: Stage'} ${g.target_stage} (${comp.name})</h3>
                 <div style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">
-                  Hạn chót: <strong>${g.deadline}</strong> · Trạng thái: <span class="badge" style="background: var(--accent); color: var(--primary);">${g.status}</span>
+                  ${isEn ? 'Deadline' : 'Hạn chót'}: <strong>${g.deadline}</strong> · <span class="badge" style="background: var(--accent); color: var(--primary);">${g.status}</span>
                 </div>
               </div>
               <div style="text-align: right;">
                 <div style="font-size: 18px; font-weight: 900; color: var(--primary);">${completedMilestones} / ${totalMilestones}</div>
-                <span style="font-size: 12px; color: var(--muted-foreground);">Milestones xong (${percent}%)</span>
+                <span style="font-size: 12px; color: var(--muted-foreground);">${isEn ? 'milestones done' : 'milestones xong'} (${percent}%)</span>
               </div>
             </div>
 
@@ -110,16 +118,15 @@
               <div class="progress-bar-fill" style="width: ${percent}%;"></div>
             </div>
 
-            <!-- Milestones List -->
-            <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 12px;">Cột Mốc Thực Thi (Milestones):</h4>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">${isEn ? 'Milestones:' : 'Milestones:'}</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
               ${(g.milestones || []).map(m => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: ${m.completed ? 'var(--neutral-50)' : '#fff'};">
-                  <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: ${m.completed ? 'line-through' : 'none'}; color: ${m.completed ? 'var(--muted-foreground)' : 'var(--foreground)'};">
-                    <input type="checkbox" ${m.completed ? 'checked' : ''} onchange="toggleMilestone('${g.id}', '${m.id}')" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: ${m.completed ? 'var(--neutral-50)' : '#fff'};">
+                  <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 600; text-decoration: ${m.completed ? 'line-through' : 'none'}; color: ${m.completed ? 'var(--muted-foreground)' : 'var(--foreground)'};">
+                    <input type="checkbox" ${m.completed ? 'checked' : ''} onchange="toggleMilestoneDirect('${g.id}', '${m.id}')" style="width: 16px; height: 16px; accent-color: var(--primary);">
                     <span>${m.label}</span>
                   </label>
-                  <span style="font-size: 12px; color: var(--muted-foreground);">Hạn: ${m.due_date}</span>
+                  <span style="font-size: 12px; color: var(--muted-foreground);">${isEn ? 'Due' : 'Hạn'}: ${m.due_date}</span>
                 </div>
               `).join('')}
             </div>
@@ -128,8 +135,9 @@
       }).join('');
     }
 
-    function toggleMilestone(goalId, milestoneId) {
-      const note = prompt('Ghi nhận minh chứng/kết quả thực hiện cột mốc này (tùy chọn):');
+    function toggleMilestoneDirect(goalId, milestoneId) {
+      const isEn = I18N.getLang() === 'en';
+      const note = prompt(isEn ? 'Record evidence note (optional):' : 'Ghi nhận Evidence cột mốc này (tùy chọn):');
       DolphinsStore.toggleMilestone(goalId, milestoneId, note);
       renderGoals();
     }
