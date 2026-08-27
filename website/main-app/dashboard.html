@@ -44,52 +44,52 @@
     <!-- Quick Stats -->
     <div class="grid-5" style="margin-bottom: 24px;">
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; display: flex; align-items: center;">
           <span data-i18n="dash_stat_progress">Tiến độ</span>
-          <span class="info-icon">?
+          <span class="info-icon" style="text-transform: none;">?
             <div class="tooltip-box">
-              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipProgressHeader">TIẾN ĐỘ ĐÁNH GIÁ</span></div>
+              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipProgressHeader">Tiến độ đánh giá</span></div>
               <div class="tooltip-desc" id="tipProgressDesc">Tỷ lệ các chỉ số và tiêu chí thuộc khung Building 21 đã được bạn hoàn thành tự đánh giá.</div>
               <div class="tooltip-divider"></div>
-              <div class="tooltip-value-title" id="tipProgressHelpTitle">TRANG NÀY GIÚP GÌ CHO TÔI?</div>
+              <div class="tooltip-value-title" id="tipProgressHelpTitle">Trang này giúp gì cho tôi?</div>
               <div class="tooltip-value-desc" id="tipProgressHelpDesc">Nhìn thấy mức độ bao phủ toàn diện của hồ sơ chuyên môn và số lượng tiêu chí còn lại cần tiếp tục đánh giá.</div>
             </div>
           </span>
-        </span>
+        </div>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statProgress">0 / 117</div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="statProgressBar" style="width: 0%;"></div></div>
       </div>
 
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; display: flex; align-items: center;">
           <span data-i18n="dash_stat_avg">Điểm TB</span>
-          <span class="info-icon">?
+          <span class="info-icon" style="text-transform: none;">?
             <div class="tooltip-box">
-              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipAvgHeader">ĐIỂM STAGE TRUNG BÌNH</span></div>
+              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipAvgHeader">Điểm Stage trung bình</span></div>
               <div class="tooltip-desc" id="tipAvgDesc">Điểm số trung bình cộng cấp độ hiện tại (Stage 1 đến 4) tính trên các tiêu chí bạn đã đánh giá.</div>
               <div class="tooltip-divider"></div>
-              <div class="tooltip-value-title" id="tipAvgHelpTitle">TRANG NÀY GIÚP GÌ CHO TÔI?</div>
+              <div class="tooltip-value-title" id="tipAvgHelpTitle">Trang này giúp gì cho tôi?</div>
               <div class="tooltip-value-desc" id="tipAvgHelpDesc">Theo dõi sự dịch chuyển thực tế từ mức Làm quen (Stage 1) lên mức Tự chủ (Stage 3) và Dẫn dắt (Stage 4).</div>
             </div>
           </span>
-        </span>
+        </div>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0; color: var(--primary);" id="statAvgStage">0.0</div>
         <span style="font-size: 12px; color: var(--muted-foreground);" data-i18n="dash_stat_scale">thang điểm 4.0</span>
       </div>
 
       <div class="surface-card" style="padding: 16px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">
+        <div style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; display: flex; align-items: center;">
           <span data-i18n="dash_stat_streak">Streak</span>
-          <span class="info-icon">?
+          <span class="info-icon" style="text-transform: none;">?
             <div class="tooltip-box">
-              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipStreakHeader">WEEKLY STREAK</span></div>
+              <div class="tooltip-header"><span class="tooltip-header-dot"></span> <span id="tipStreakHeader">Weekly Streak</span></div>
               <div class="tooltip-desc" id="tipStreakDesc">Số tuần liên tiếp bạn duy trì việc tự đánh giá, thêm bằng chứng hoặc thực hiện check-in định kỳ.</div>
               <div class="tooltip-divider"></div>
-              <div class="tooltip-value-title" id="tipStreakHelpTitle">TRANG NÀY GIÚP GÌ CHO TÔI?</div>
+              <div class="tooltip-value-title" id="tipStreakHelpTitle">Trang này giúp gì cho tôi?</div>
               <div class="tooltip-value-desc" id="tipStreakHelpDesc">Xây dựng thói quen phản tư liên tục và duy trì cam kết phát triển bản thân đều đặn mỗi tuần.</div>
             </div>
           </span>
-        </span>
+        </div>
         <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statStreak">0 tuần ✨</div>
         <span style="font-size: 12px; color: var(--muted-foreground);" id="streakSubtext">Duy trì đều đặn</span>
       </div>
@@ -171,19 +171,19 @@
       document.getElementById('btnClearSample').textContent = isEn ? 'My Real Data' : 'Dữ liệu thật của tôi';
 
       // 2-tier Tooltips Localization
-      document.getElementById('tipProgressHeader').textContent = isEn ? 'ASSESSMENT PROGRESS' : 'TIẾN ĐỘ ĐÁNH GIÁ';
+      document.getElementById('tipProgressHeader').textContent = isEn ? 'Assessment Progress' : 'Tiến độ đánh giá';
       document.getElementById('tipProgressDesc').textContent = isEn ? 'Percentage of indicators completed under Building 21 rubric.' : 'Tỷ lệ các chỉ số và tiêu chí thuộc khung Building 21 đã được bạn hoàn thành tự đánh giá.';
-      document.getElementById('tipProgressHelpTitle').textContent = isEn ? 'HOW DOES THIS HELP ME?' : 'TRANG NÀY GIÚP GÌ CHO TÔI?';
+      document.getElementById('tipProgressHelpTitle').textContent = isEn ? 'How does this help me?' : 'Trang này giúp gì cho tôi?';
       document.getElementById('tipProgressHelpDesc').textContent = isEn ? 'Track professional coverage and identify remaining growth indicators.' : 'Nhìn thấy mức độ bao phủ toàn diện của hồ sơ chuyên môn và số lượng tiêu chí còn lại cần tiếp tục đánh giá.';
 
-      document.getElementById('tipAvgHeader').textContent = isEn ? 'AVERAGE STAGE' : 'ĐIỂM STAGE TRUNG BÌNH';
+      document.getElementById('tipAvgHeader').textContent = isEn ? 'Average Stage' : 'Điểm Stage trung bình';
       document.getElementById('tipAvgDesc').textContent = isEn ? 'Arithmetic mean of assessed stages across all evaluated indicators.' : 'Điểm số trung bình cộng cấp độ hiện tại (Stage 1 đến 4) tính trên các tiêu chí bạn đã đánh giá.';
-      document.getElementById('tipAvgHelpTitle').textContent = isEn ? 'HOW DOES THIS HELP ME?' : 'TRANG NÀY GIÚP GÌ CHO TÔI?';
+      document.getElementById('tipAvgHelpTitle').textContent = isEn ? 'How does this help me?' : 'Trang này giúp gì cho tôi?';
       document.getElementById('tipAvgHelpDesc').textContent = isEn ? 'Monitor measurable progression towards Proficient (Stage 3) and Mentor (Stage 4).' : 'Theo dõi sự dịch chuyển thực tế từ mức Làm quen (Stage 1) lên mức Tự chủ (Stage 3) và Dẫn dắt (Stage 4).';
 
-      document.getElementById('tipStreakHeader').textContent = isEn ? 'WEEKLY STREAK' : 'WEEKLY STREAK';
+      document.getElementById('tipStreakHeader').textContent = isEn ? 'Weekly Streak' : 'Weekly Streak';
       document.getElementById('tipStreakDesc').textContent = isEn ? 'Consecutive weeks of self-assessment, evidence logging, or reflection.' : 'Số tuần liên tiếp bạn duy trì việc tự đánh giá, thêm bằng chứng hoặc thực hiện check-in định kỳ.';
-      document.getElementById('tipStreakHelpTitle').textContent = isEn ? 'HOW DOES THIS HELP ME?' : 'TRANG NÀY GIÚP GÌ CHO TÔI?';
+      document.getElementById('tipStreakHelpTitle').textContent = isEn ? 'How does this help me?' : 'Trang này giúp gì cho tôi?';
       document.getElementById('tipStreakHelpDesc').textContent = isEn ? 'Build an unshakeable habit of reflection and continuous improvement.' : 'Xây dựng thói quen phản tư liên tục và duy trì cam kết phát triển bản thân đều đặn mỗi tuần.';
 
       const ratings = DolphinsStore.getRatings();
