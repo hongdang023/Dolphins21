@@ -1,11 +1,10 @@
 /**
  * Dolphins21 API Client with local fallback store
- * Allows offline-ready execution and Cloudflare D1 integration
+ * Clean initial state (Zero dummy data)
  */
 const API_BASE = 'https://dolphins21-api.pages.dev/v1';
 
 window.DolphinsStore = {
-  // Local storage cache keys
   KEYS: {
     PROFILE: 'dolphins21_profile',
     RATINGS: 'dolphins21_ratings',
@@ -33,13 +32,13 @@ window.DolphinsStore = {
     }
   },
 
-  // Profile
+  // Profile (Empty initial state)
   getProfile() {
     return this.get(this.KEYS.PROFILE, {
-      name: 'Giáo viên',
-      subject: 'Toán học & STEM',
-      years_experience: 3,
-      school: 'THPT Dolphins'
+      name: '',
+      subject: '',
+      years_experience: '',
+      school: ''
     });
   },
 
@@ -48,7 +47,7 @@ window.DolphinsStore = {
     return profile;
   },
 
-  // Ratings
+  // Ratings (Empty initial state)
   getRatings() {
     return this.get(this.KEYS.RATINGS, {});
   },
@@ -66,7 +65,7 @@ window.DolphinsStore = {
     return ratings[indicatorId];
   },
 
-  // Snapshots
+  // Snapshots (Empty initial state)
   getSnapshots() {
     return this.get(this.KEYS.SNAPSHOTS, []);
   },
@@ -85,9 +84,9 @@ window.DolphinsStore = {
     return newSnap;
   },
 
-  // Focus / Pinned Competencies
+  // Focus / Pinned Competencies (Empty initial state)
   getFocus() {
-    return this.get(this.KEYS.FOCUS, ['TC1.1', 'TC5.7']);
+    return this.get(this.KEYS.FOCUS, []);
   },
 
   toggleFocus(competencyId) {
@@ -102,23 +101,9 @@ window.DolphinsStore = {
     return focus;
   },
 
-  // SMART Goals
+  // SMART Goals (Empty initial state)
   getGoals() {
-    return this.get(this.KEYS.GOALS, [
-      {
-        id: 'goal_sample',
-        indicator_id: 'TC1.1-IND-1',
-        competency_id: 'TC1.1',
-        current_stage: 2,
-        target_stage: 4,
-        deadline: '2026-12-31',
-        status: 'active',
-        milestones: [
-          { id: 'ms_1', label: 'Tuần 1-2: Áp dụng restorative practice cho 3 tình huống', due_date: '2026-09-15', completed: 1, evidence_note: 'Đã họp lớp xử lý bất đồng nhóm' },
-          { id: 'ms_2', label: 'Tháng 10: Xây dựng bộ quy tắc giao tiếp công bằng', due_date: '2026-10-31', completed: 0, evidence_note: '' }
-        ]
-      }
-    ]);
+    return this.get(this.KEYS.GOALS, []);
   },
 
   saveGoal(goal) {
@@ -147,18 +132,9 @@ window.DolphinsStore = {
     return goals;
   },
 
-  // Evidence Notes
+  // Evidence Notes (Empty initial state)
   getEvidence() {
-    return this.get(this.KEYS.EVIDENCE, [
-      {
-        id: 'ev_sample_1',
-        indicator_id: 'TC1.1-IND-1',
-        competency_id: 'TC1.1',
-        date: '2026-08-25',
-        content: 'Hôm nay tôi đã tổ chức vòng tròn chia sẻ (restorative circle) đầu giờ. 90% học sinh chủ động nói về áp lực bài vở tuần qua.',
-        tags: ['trauma-informed', 'circle']
-      }
-    ]);
+    return this.get(this.KEYS.EVIDENCE, []);
   },
 
   saveEvidence(evidence) {
@@ -170,12 +146,9 @@ window.DolphinsStore = {
     return evidence;
   },
 
-  // Weekly Habit
+  // Weekly Habit (Empty initial state)
   getWeeklyLogs() {
-    return this.get(this.KEYS.WEEKLY_LOGS, [
-      { id: 'wk_1', week_start_date: '2026-08-17', note: 'Hoàn thành tự đánh giá sơ bộ' },
-      { id: 'wk_2', week_start_date: '2026-08-24', note: 'Đặt mục tiêu cho TC.1 và TC.5' }
-    ]);
+    return this.get(this.KEYS.WEEKLY_LOGS, []);
   },
 
   saveWeeklyLog(note) {

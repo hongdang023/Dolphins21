@@ -3,18 +3,18 @@
 > **Hệ thống**: Teacher Competency Growth OS | 2026-08-27
 >
 > **Triết lý**: Nội dung là **"nhiên liệu"** đẩy người dùng qua vòng lặp Assess → Plan → Act → Reflect.
-> Mọi mẩu nội dung phải trả lời được: *"Tôi cần làm gì tiếp theo để tiến bộ?"*
+> Mọi mẩu nội dung phải trả lời được: _"Tôi cần làm gì tiếp theo để tiến bộ?"_
 
 ---
 
 ## 1. PHÂN LOẠI NỘI DUNG (4 loại)
 
-| Loại | Nguồn | Ai viết | Mục tiêu |
-|------|--------|---------|---------|
-| **Framework Content** | Building 21 Excel | Gốc tiếng Anh – không chỉnh sửa | Cung cấp rubric chuẩn để tự đánh giá |
-| **System Content** | Developer viết | UI labels, tooltips, CTA buttons | Điều hướng hành động |
-| **AI-Generated Content** | Tự động từ data | Next Action gợi ý, milestone suggestions | Giảm friction sau mỗi bước |
-| **User Content** | Người dùng tự nhập | Evidence notes, goal names, profile | Lưu vết bằng chứng cá nhân |
+| Loại                     | Nguồn              | Ai viết                                  | Mục tiêu                             |
+| ------------------------ | ------------------ | ---------------------------------------- | ------------------------------------ |
+| **Framework Content**    | Building 21 Excel  | Gốc tiếng Anh                            | Cung cấp rubric chuẩn để tự đánh giá |
+| **System Content**       | Developer viết     | UI labels, tooltips, CTA buttons         | Điều hướng hành động                 |
+| **AI-Generated Content** | Tự động từ data    | Next Action gợi ý, milestone suggestions | Giảm friction sau mỗi bước           |
+| **User Content**         | Người dùng tự nhập | Evidence notes, goal names, profile      | Lưu vết bằng chứng cá nhân           |
 
 ---
 
@@ -24,14 +24,14 @@
 
 Nội dung gốc từ Building 21, **không được dịch hoặc chỉnh sửa**. Chỉ được:
 
-| Được phép | Không được phép |
-|-----------|----------------|
-| ✅ Highlight từ khóa quan trọng | ❌ Paraphrase hoặc rút gọn |
-| ✅ Chia đoạn dài thành bullet | ❌ Thêm ý không có trong bản gốc |
-| ✅ Thêm tooltip giải thích thuật ngữ | ❌ Dịch sang tiếng Việt |
-| ✅ Hiển thị citation nguồn gốc | ❌ Thay đổi Stage boundary |
+| Được phép                            | Không được phép                  |
+| ------------------------------------ | -------------------------------- |
+| ✅ Highlight từ khóa quan trọng      | ❌ Paraphrase hoặc rút gọn       |
+| ✅ Chia đoạn dài thành bullet        | ❌ Thêm ý không có trong bản gốc |
+| ✅ Thêm tooltip giải thích thuật ngữ | ❌ Dịch sang tiếng Việt          |
+| ✅ Hiển thị citation nguồn gốc       | ❌ Thay đổi Stage boundary       |
 
-> **Citation bắt buộc**: *Building 21 Teacher Competencies – Sandra Moumoutjis (CC BY-NC-SA 4.0)*
+> **Citation bắt buộc**: _Building 21 Teacher Competencies – Sandra Moumoutjis (CC BY-NC-SA 4.0)_
 
 ---
 
@@ -60,6 +60,7 @@ Tiêu chuẩn viết UI copy:
 Mọi gợi ý tự động phải theo template cố định:
 
 **Template "Next Action"** (hiển thị sau mỗi màn hình kết quả):
+
 ```
 [Động từ hành động] + [Skill cụ thể] + [Kết quả kỳ vọng]
 
@@ -70,6 +71,7 @@ Ví dụ:
 ```
 
 **Template "Milestone Suggestion"** (khi đặt SMART Goal):
+
 ```
 Tuần [N]: [Hành động quan sát được] liên quan đến [Indicator cụ thể]
 
@@ -87,6 +89,7 @@ Ví dụ (Goal: TC.1.1 từ Stage 1 → Stage 3, deadline 3 tháng):
 Hướng dẫn hiển thị trong textarea để người dùng viết đúng:
 
 **Prompt gợi ý** (placeholder text):
+
 ```
 Mô tả điều bạn đã làm trong lớp học liên quan đến indicator này...
 Ví dụ: "Ngày 15/8: Tôi đã để học sinh tự chọn bài tập theo 3 mức độ khó.
@@ -94,6 +97,7 @@ Ví dụ: "Ngày 15/8: Tôi đã để học sinh tự chọn bài tập theo 3 
 ```
 
 **Validation**: Evidence note có giá trị cao hơn khi có:
+
 - ✅ Ngày cụ thể
 - ✅ Hành động quan sát được (không phải cảm nhận chủ quan)
 - ✅ Kết quả/phản ứng của học sinh
@@ -119,15 +123,15 @@ Khi người dùng đánh giá 1 Indicator, nội dung hiển thị theo thứ t
 
 ## 4. MICRO-COPY STANDARDS – Các cụm từ chuẩn hóa
 
-| Tình huống | Cụm từ dùng | Cụm từ tránh |
-|-----------|-------------|-------------|
-| Chọn Stage | "Tôi đang ở Stage..." | "Điểm số của tôi là..." |
-| Lưu thành công | "Đã lưu ✓" | "Success!" |
-| Chưa đánh giá | "Chưa đánh giá" | "N/A" hoặc "Null" |
-| Hoàn thành milestone | "Milestone đạt ✓" + field ghi evidence | Chỉ checkbox không |
-| Streak | "X tuần liên tiếp ✨" | "Streak: X" |
-| Điểm thấp nhất | "Đang phát triển nhất" | "Điểm yếu" / "Kém nhất" |
-| Chia sẻ | "Chia sẻ với mentor" | "Public" / "Xuất bản" |
+| Tình huống           | Cụm từ dùng                            | Cụm từ tránh            |
+| -------------------- | -------------------------------------- | ----------------------- |
+| Chọn Stage           | "Tôi đang ở Stage..."                  | "Điểm số của tôi là..." |
+| Lưu thành công       | "Đã lưu ✓"                             | "Success!"              |
+| Chưa đánh giá        | "Chưa đánh giá"                        | "N/A" hoặc "Null"       |
+| Hoàn thành milestone | "Milestone đạt ✓" + field ghi evidence | Chỉ checkbox không      |
+| Streak               | "X tuần liên tiếp ✨"                  | "Streak: X"             |
+| Điểm thấp nhất       | "Đang phát triển nhất"                 | "Điểm yếu" / "Kém nhất" |
+| Chia sẻ              | "Chia sẻ với mentor"                   | "Public" / "Xuất bản"   |
 
 ---
 
@@ -140,4 +144,5 @@ Khi người dùng đánh giá 1 Indicator, nội dung hiển thị theo thứ t
 5. Next Action có chứa **tên Competency/Indicator cụ thể** không, hay chỉ chung chung?
 
 ---
-*→ Tham chiếu: A0_Philosophy (Tôn chỉ 1: Action over Insight) | A2_UserStories (US-TCH-D3-23: Rubric view)*
+
+_→ Tham chiếu: A0_Philosophy (Tôn chỉ 1: Action over Insight) | A2_UserStories (US-TCH-D3-23: Rubric view)_
