@@ -413,6 +413,9 @@
                                       <div class="level-desc" style="color: var(--muted-foreground);">
                                         ${isEn ? 'Not Attempted / Unacceptable' : 'Chưa thực hiện / Không đạt yêu cầu'}
                                       </div>
+                                      <div class="level-example">
+                                        <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? 'Not yet implemented in classroom practice.' : 'Chưa áp dụng tiêu chí này trong giờ dạy.'}
+                                      </div>
                                     </button>
 
                                     <!-- Level 1 (25%) -->
@@ -421,7 +424,10 @@
                                         <span class="level-badge">Level 1</span>
                                         <span class="level-pct">25%</span>
                                       </div>
-                                      <div class="level-desc">${ind.rubric_stage1}</div>
+                                      <div class="level-desc">${isEn ? ind.rubric_stage1 : (ind.rubric_stage1_vi || ind.rubric_stage1)}</div>
+                                      <div class="level-example">
+                                        <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage1 || '') : (ind.example_stage1_vi || ind.example_stage1 || '')}
+                                      </div>
                                     </button>
 
                                     <!-- Level 2 (50%) -->
@@ -430,7 +436,10 @@
                                         <span class="level-badge">Level 2</span>
                                         <span class="level-pct">50%</span>
                                       </div>
-                                      <div class="level-desc">${ind.rubric_stage2}</div>
+                                      <div class="level-desc">${isEn ? ind.rubric_stage2 : (ind.rubric_stage2_vi || ind.rubric_stage2)}</div>
+                                      <div class="level-example">
+                                        <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage2 || '') : (ind.example_stage2_vi || ind.example_stage2 || '')}
+                                      </div>
                                     </button>
 
                                     <!-- Level 3 (75%) -->
@@ -439,7 +448,10 @@
                                         <span class="level-badge">Level 3</span>
                                         <span class="level-pct">75%</span>
                                       </div>
-                                      <div class="level-desc">${ind.rubric_stage3}</div>
+                                      <div class="level-desc">${isEn ? ind.rubric_stage3 : (ind.rubric_stage3_vi || ind.rubric_stage3)}</div>
+                                      <div class="level-example">
+                                        <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage3 || '') : (ind.example_stage3_vi || ind.example_stage3 || '')}
+                                      </div>
                                     </button>
 
                                     <!-- Level 4 (100%) -->
@@ -448,7 +460,10 @@
                                         <span class="level-badge" style="color: var(--primary);">Level 4</span>
                                         <span class="level-pct" style="color: var(--primary);">100%</span>
                                       </div>
-                                      <div class="level-desc" style="font-weight: 500;">${ind.rubric_stage4}</div>
+                                      <div class="level-desc" style="font-weight: 500;">${isEn ? ind.rubric_stage4 : (ind.rubric_stage4_vi || ind.rubric_stage4)}</div>
+                                      <div class="level-example">
+                                        <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage4 || '') : (ind.example_stage4_vi || ind.example_stage4 || '')}
+                                      </div>
                                     </button>
                                   </div>
 

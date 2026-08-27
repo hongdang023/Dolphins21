@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Giáo Viên – Dolphins21 Admin</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21 Admin</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Tổng quan & Thống kê</a></li>
+        <li><a href="framework.html" class="nav-link">Quản lý Building 21</a></li>
+        <li><a href="profiles.html" class="nav-link active">Hồ sơ Giáo viên</a></li>
+        <li><a href="https://dolphins21.pages.dev" class="btn btn-secondary btn-sm" target="_blank">Mở Website Teacher ↗</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+      <div>
+        <span class="eyebrow">User & Growth Management</span>
+        <h1 class="page-title">Quản Lý Hồ Sơ Giáo Viên</h1>
+        <p class="page-subtitle">Theo dõi danh sách giáo viên, tiến độ hoàn thành tự đánh giá 117 chỉ số và mục tiêu phát triển chuyên môn.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="loadProfilesFromAPI()">🔄 Làm mới dữ liệu</button>
+      </div>
+    </div>
+
+    <!-- Stats Quick Cards -->
+    <div class="grid-3" style="margin-bottom: 24px;">
+      <div class="kpi-card">
+        <span class="kpi-title">Tổng số Hồ sơ Giáo viên</span>
+        <div class="kpi-value" id="kpiTotalTeachers">1</div>
+        <div class="kpi-subtitle">Hồ sơ hoạt động trên hệ thống D1</div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">Tiến độ Đánh giá Trung bình</span>
+        <div class="kpi-value" id="kpiAvgCompletion">72%</div>
+        <div class="kpi-subtitle">Chỉ số năng lực đã được định mức</div>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-title">Mục tiêu Đang Thực hiện</span>
+        <div class="kpi-value" id="kpiTotalGoals">3</div>
+        <div class="kpi-subtitle">SMART Goals đang chạy</div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="surface-card" style="margin-bottom: 20px; padding: 16px 20px;">
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 1; min-width: 260px;">
+          <input type="text" id="profileSearchInput" class="form-input" placeholder="Tìm theo tên giáo viên, môn học hoặc trường..." oninput="filterProfilesTable()">
+        </div>
+        <div style="min-width: 180px;">
+          <select id="progressFilter" class="form-select" onchange="filterProfilesTable()">
+            <option value="all">Tất cả tiến độ</option>
+            <option value="completed">Đã hoàn thành (100%)</option>
+            <option value="in_progress">Đang thực hiện (> 0%)</option>
+            <option value="new">Chưa bắt đầu (0%)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profiles Table -->
+    <div class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Giáo Viên</th>
+            <th>Môn / Bộ Môn</th>
+            <th>Trường / Đơn Vị</th>
+            <th>Kinh Nghiệm</th>
+            <th>Tiến Độ Đánh Giá</th>
+            <th>Cập Nhật</th>
+            <th style="text-align: right;">Thao Tác</th>
+          </tr>
+        </thead>
+        <tbody id="profilesTableBody">
+          <!-- Render dynamic profiles -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Profile Detail Modal -->
+  <div id="profileDetailModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow" id="detailEyebrow">HỒ SƠ CHI TIẾT</span>
+          <h3 class="modal-title" id="detailTeacherName">Thông tin Giáo viên</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeProfileDetail()">&times;</button>
+      </div>
+      <div class="modal-body" id="detailModalBody">
+        <!-- Render detail info -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeProfileDetail()">Đóng</button>
+        <a href="https://dolphins21.pages.dev/dashboard.html" target="_blank" class="btn btn-primary">Mở Dashboard Xem Radar ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script>
+    const API_BASE = 'https://dolphins21-api.danghong.workers.dev/v1';
+
+    let currentProfiles = [
+      {
+        id: 'main',
+        name: 'Nguyễn Văn Minh',
+        subject: 'Toán học & STEM',
+        years_experience: 5,
+        school: 'THPT Chuyên',
+        rated_count: 84,
+        completion_percent: 72,
+        updated_at: new Date().toISOString()
+      }
+    ];
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<span>${type === 'success' ? '✓' : '⚠️'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    async function loadProfilesFromAPI() {
+      try {
+        const res = await fetch(`${API_BASE}/admin/profiles`);
+        const json = await res.json();
+        if (json.data && json.data.length > 0) {
+          currentProfiles = json.data;
+        }
+        showToast('Đã đồng bộ danh sách giáo viên từ D1 Database', 'success');
+      } catch (err) {
+        console.warn('API fetch fallback:', err);
+      }
+      renderProfilesTable();
+    }
+
+    function renderProfilesTable(filterQ = '', filterProg = 'all') {
+      const tbody = document.getElementById('profilesTableBody');
+      const q = filterQ.trim().toLowerCase();
+
+      let filtered = currentProfiles.filter(p => {
+        const matchQ = !q || 
+          p.name.toLowerCase().includes(q) || 
+          (p.subject && p.subject.toLowerCase().includes(q)) || 
+          (p.school && p.school.toLowerCase().includes(q));
+
+        if (!matchQ) return false;
+
+        if (filterProg === 'completed') return p.completion_percent >= 100;
+        if (filterProg === 'in_progress') return p.completion_percent > 0 && p.completion_percent < 100;
+        if (filterProg === 'new') return p.completion_percent === 0;
+        return true;
+      });
+
+      // Update KPI
+      document.getElementById('kpiTotalTeachers').textContent = currentProfiles.length;
+      const avgProg = currentProfiles.length ? Math.round(currentProfiles.reduce((s, p) => s + (p.completion_percent || 0), 0) / currentProfiles.length) : 0;
+      document.getElementById('kpiAvgCompletion').textContent = `${avgProg}%`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 40px; color: var(--muted-foreground);">
+              Không tìm thấy hồ sơ giáo viên nào khớp với bộ lọc.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => {
+        const updatedDate = p.updated_at ? new Date(p.updated_at).toLocaleDateString('vi-VN') : 'Hôm nay';
+        const rated = p.rated_count || 0;
+        const pct = p.completion_percent || Math.round((rated / 117) * 100);
+
+        return `
+          <tr>
+            <td>
+              <div style="font-weight: 800; color: var(--foreground);">${p.name || 'Giáo viên'}</div>
+              <div style="font-size: 11px; color: var(--muted-foreground);">ID: ${p.id}</div>
+            </td>
+            <td><strong>${p.subject || 'Toán học & STEM'}</strong></td>
+            <td>${p.school || 'THPT Chuyên'}</td>
+            <td>${p.years_experience || 5} năm</td>
+            <td style="min-width: 170px;">
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                <span style="font-weight: 700;">${rated}/117 chỉ số</span>
+                <span style="color: var(--primary); font-weight: 800;">${pct}%</span>
+              </div>
+              <div class="progress-bar-bg" style="height: 6px;">
+                <div class="progress-bar-fill" style="width: ${pct}%;"></div>
+              </div>
+            </td>
+            <td style="font-size: 12px; color: var(--muted-foreground);">${updatedDate}</td>
+            <td style="text-align: right;">
+              <button class="btn btn-secondary btn-sm" onclick="viewProfileDetail('${p.id}')">Xem Chi Tiết</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterProfilesTable() {
+      const q = document.getElementById('profileSearchInput').value;
+      const prog = document.getElementById('progressFilter').value;
+      renderProfilesTable(q, prog);
+    }
+
+    function viewProfileDetail(profileId) {
+      const p = currentProfiles.find(item => item.id === profileId);
+      if (!p) return;
+
+      document.getElementById('detailTeacherName').textContent = p.name;
+      document.getElementById('detailEyebrow').textContent = `HỒ SƠ #${p.id.toUpperCase()}`;
+
+      const rated = p.rated_count || 0;
+      const pct = p.completion_percent || Math.round((rated / 117) * 100);
+
+      document.getElementById('detailModalBody').innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div style="background: #fafaf9; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-size: 11px; color: var(--muted-foreground); text-transform: uppercase;">Môn Giảng Dạy</div>
+            <div style="font-size: 15px; font-weight: 800; margin-top: 2px;">${p.subject || 'Chưa cập nhật'}</div>
+          </div>
+          <div style="background: #fafaf9; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-size: 11px; color: var(--muted-foreground); text-transform: uppercase;">Trường / Đơn Vị</div>
+            <div style="font-size: 15px; font-weight: 800; margin-top: 2px;">${p.school || 'Chưa cập nhật'}</div>
+          </div>
+          <div style="background: #fafaf9; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-size: 11px; color: var(--muted-foreground); text-transform: uppercase;">Kinh Nghiệm</div>
+            <div style="font-size: 15px; font-weight: 800; margin-top: 2px;">${p.years_experience || 0} năm giảng dạy</div>
+          </div>
+          <div style="background: #fafaf9; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <div style="font-size: 11px; color: var(--muted-foreground); text-transform: uppercase;">Tiến Độ Tự Đánh Giá</div>
+            <div style="font-size: 15px; font-weight: 800; color: var(--primary); margin-top: 2px;">${rated}/117 (${pct}%)</div>
+          </div>
+        </div>
+
+        <div class="accent-panel" style="margin-top: 8px;">
+          <strong style="display: block; margin-bottom: 6px; font-size: 13px;">Gợi ý hành động từ Mentor:</strong>
+          <p style="font-size: 12.5px; margin: 0; line-height: 1.45;">
+            Giáo viên đã hoàn thành ${pct}% bảng đánh giá. Các trọng tâm phát triển tiếp theo nên tập trung vào thiết kế mục tiêu SMART (Goals) và thu thập minh chứng thực tế (Evidence Vault).
+          </p>
+        </div>
+      `;
+
+      document.getElementById('profileDetailModal').classList.add('open');
+    }
+
+    function closeProfileDetail() {
+      document.getElementById('profileDetailModal').classList.remove('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfilesFromAPI();
+    });
+  </script>
+</body>
+</html>

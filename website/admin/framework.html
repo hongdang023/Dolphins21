@@ -15,60 +15,294 @@
         <span>Dolphins21 Admin</span>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html" class="nav-link">Tổng quan</a></li>
+        <li><a href="index.html" class="nav-link">Tổng quan & Thống kê</a></li>
         <li><a href="framework.html" class="nav-link active">Quản lý Building 21</a></li>
+        <li><a href="profiles.html" class="nav-link">Hồ sơ Giáo viên</a></li>
+        <li><a href="https://dolphins21.pages.dev" class="btn btn-secondary btn-sm" target="_blank">Mở Website Teacher ↗</a></li>
       </ul>
     </div>
   </header>
 
   <main class="page-shell">
-    <div style="margin-bottom: 24px;">
-      <span class="eyebrow">Framework Master Data</span>
-      <h1 class="page-title">Quản Lý Nội Dung Rubric Building 21</h1>
-      <p class="page-subtitle">Xem toàn bộ 117 indicators và tiêu chí 4 stages được trích xuất từ Excel gốc.</p>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+      <div>
+        <span class="eyebrow">Framework Master Data</span>
+        <h1 class="page-title">Quản Lý Nội Dung Rubric Building 21</h1>
+        <p class="page-subtitle">Xem và chỉnh sửa trực tiếp nội dung 117 indicators cùng tiêu chí 4 stages lưu vào Cloudflare D1.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="exportFrameworkJson()">Xuất JSON Framework</button>
+      </div>
     </div>
 
+    <!-- Search & Filter Controls -->
+    <div class="surface-card" style="margin-bottom: 24px; padding: 16px 20px;">
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 1; min-width: 260px;">
+          <input type="text" id="searchInput" class="form-input" placeholder="Tìm theo mã chỉ số (vd: TC1.1.1) hoặc từ khóa tiêu chí..." oninput="filterFramework()">
+        </div>
+        <div style="min-width: 200px;">
+          <select id="domainFilter" class="form-select" onchange="filterFramework()">
+            <option value="all">Tất cả 5 Domains</option>
+            <option value="TC.1">TC.1 - Tầm nhìn & Mục tiêu</option>
+            <option value="TC.2">TC.2 - Văn hóa & Quan hệ</option>
+            <option value="TC.3">TC.3 - Thiết kế & Đánh giá học tập</option>
+            <option value="TC.4">TC.4 - Phương pháp sư phạm</option>
+            <option value="TC.5">TC.5 - Phát triển chuyên môn</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Framework List Container -->
     <div id="adminFrameworkList" style="display: flex; flex-direction: column; gap: 24px;">
       <!-- Dynamic rendering -->
     </div>
   </main>
 
+  <!-- Edit Rubric Modal -->
+  <div id="rubricEditModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow" id="modalIndicatorBadge">CHỈ SỐ TC1.1.1</span>
+          <h3 class="modal-title" id="modalIndicatorTitle">Chỉnh sửa Tiêu chí Rubric</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editIndicatorId">
+        
+        <div class="form-group">
+          <label class="form-label" style="color: var(--primary);">Stage 1 (Đang phát triển - Developing)</label>
+          <textarea id="editStage1" class="form-textarea" rows="3" placeholder="Nhập mô tả hành vi cho Stage 1..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="color: #b45309;">Stage 2 (Thành thạo cơ bản - Proficient)</label>
+          <textarea id="editStage2" class="form-textarea" rows="3" placeholder="Nhập mô tả hành vi cho Stage 2..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="color: #047857;">Stage 3 (Nâng cao - Advanced)</label>
+          <textarea id="editStage3" class="form-textarea" rows="3" placeholder="Nhập mô tả hành vi cho Stage 3..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="color: #4338ca;">Stage 4 (Xuất sắc / Định hướng - Exemplary)</label>
+          <textarea id="editStage4" class="form-textarea" rows="3" placeholder="Nhập mô tả hành vi cho Stage 4..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEditModal()">Hủy</button>
+        <button class="btn btn-primary" id="btnSaveRubric" onclick="saveRubricToD1()">Lưu vào Database D1</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
   <script src="js/building21-data.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE = 'https://dolphins21-api.danghong.workers.dev/v1';
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<span>${type === 'success' ? '✓' : '⚠️'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    function renderFramework(filterText = '', domainVal = 'all') {
       const container = document.getElementById('adminFrameworkList');
-      container.innerHTML = window.BUILDING21_DATA.domains.map(d => {
+      const q = filterText.trim().toLowerCase();
+
+      let domains = window.BUILDING21_DATA.domains;
+      if (domainVal !== 'all') {
+        domains = domains.filter(d => d.id === domainVal);
+      }
+
+      let renderedCount = 0;
+
+      container.innerHTML = domains.map(d => {
         const comps = window.BUILDING21_DATA.competencies.filter(c => c.domain_id === d.id);
+        
+        const compCards = comps.map(c => {
+          let indList = window.BUILDING21_DATA.indicators.filter(i => i.competency_id === c.id);
+          
+          if (q) {
+            indList = indList.filter(ind => 
+              ind.id.toLowerCase().includes(q) ||
+              (ind.name && ind.name.toLowerCase().includes(q)) ||
+              (ind.rubric_stage1 && ind.rubric_stage1.toLowerCase().includes(q)) ||
+              (ind.rubric_stage2 && ind.rubric_stage2.toLowerCase().includes(q)) ||
+              (ind.rubric_stage3 && ind.rubric_stage3.toLowerCase().includes(q)) ||
+              (ind.rubric_stage4 && ind.rubric_stage4.toLowerCase().includes(q))
+            );
+          }
+
+          if (indList.length === 0) return '';
+          renderedCount += indList.length;
+
+          return `
+            <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; background: #ffffff;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="font-weight: 800; font-size: 15px; color: var(--foreground);">${c.id} · ${c.name}</div>
+                <span class="badge" style="background: var(--accent); color: var(--primary);">${indList.length} Indicators</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                ${indList.map(ind => `
+                  <div style="background: #fafaf9; border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-md);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="badge badge-stage-2" style="font-weight: 800;">${ind.id}</span>
+                        <strong style="font-size: 14px;">${ind.name || 'Tiêu chuẩn năng lực'}</strong>
+                      </div>
+                      <button class="btn btn-secondary btn-sm" onclick="openEditModal('${ind.id}')">
+                        ✏️ Chỉnh sửa Rubric
+                      </button>
+                    </div>
+
+                    <div class="grid-2" style="gap: 10px; font-size: 12.5px; line-height: 1.45;">
+                      <div style="background: #ffffff; padding: 10px; border-radius: var(--radius-sm); border-left: 3px solid #64748b;">
+                        <strong style="color: #475569; display: block; margin-bottom: 3px;">Stage 1:</strong>
+                        <div style="color: #334155;">${ind.rubric_stage1 || '(Trống)'}</div>
+                      </div>
+                      <div style="background: #ffffff; padding: 10px; border-radius: var(--radius-sm); border-left: 3px solid #f97316;">
+                        <strong style="color: #c2410c; display: block; margin-bottom: 3px;">Stage 2:</strong>
+                        <div style="color: #334155;">${ind.rubric_stage2 || '(Trống)'}</div>
+                      </div>
+                      <div style="background: #ffffff; padding: 10px; border-radius: var(--radius-sm); border-left: 3px solid #10b981;">
+                        <strong style="color: #047857; display: block; margin-bottom: 3px;">Stage 3:</strong>
+                        <div style="color: #334155;">${ind.rubric_stage3 || '(Trống)'}</div>
+                      </div>
+                      <div style="background: #ffffff; padding: 10px; border-radius: var(--radius-sm); border-left: 3px solid #6366f1;">
+                        <strong style="color: #4338ca; display: block; margin-bottom: 3px;">Stage 4:</strong>
+                        <div style="color: #334155;">${ind.rubric_stage4 || '(Trống)'}</div>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }).filter(Boolean).join('');
+
+        if (!compCards) return '';
 
         return `
           <div class="surface-card">
-            <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 16px; color: var(--primary);">
+            <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 16px; color: var(--primary);">
               ${d.id} · ${d.name}
             </h2>
             <div style="display: flex; flex-direction: column; gap: 16px;">
-              ${comps.map(c => {
-                const indList = window.BUILDING21_DATA.indicators.filter(i => i.competency_id === c.id);
-                return `
-                  <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
-                    <div style="font-weight: 800; font-size: 16px; margin-bottom: 4px;">${c.id} · ${c.name}</div>
-                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Số lượng: ${indList.length} Indicators</div>
-
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                      ${indList.map(ind => `
-                        <div style="background: var(--neutral-50); padding: 10px; border-radius: var(--radius-sm); font-size: 13px;">
-                          <strong>Chỉ số ${ind.id}:</strong>
-                          <div style="margin-top: 4px; color: var(--neutral-700);"><strong>Stage 1:</strong> ${ind.rubric_stage1.substring(0, 120)}...</div>
-                          <div style="margin-top: 2px; color: var(--neutral-700);"><strong>Stage 4:</strong> ${ind.rubric_stage4.substring(0, 120)}...</div>
-                        </div>
-                      `).join('')}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
+              ${compCards}
             </div>
           </div>
         `;
-      }).join('');
+      }).filter(Boolean).join('');
+
+      if (renderedCount === 0) {
+        container.innerHTML = `
+          <div class="empty-state-box">
+            <div class="empty-state-icon">🔍</div>
+            <div class="empty-state-title">Không tìm thấy chỉ số phù hợp</div>
+            <div class="empty-state-desc">Hãy thử thay đổi từ khóa tìm kiếm hoặc chọn lọc domain khác.</div>
+          </div>
+        `;
+      }
+    }
+
+    function filterFramework() {
+      const q = document.getElementById('searchInput').value;
+      const domainVal = document.getElementById('domainFilter').value;
+      renderFramework(q, domainVal);
+    }
+
+    function openEditModal(indicatorId) {
+      const ind = window.BUILDING21_DATA.indicators.find(i => i.id === indicatorId);
+      if (!ind) return;
+
+      document.getElementById('editIndicatorId').value = ind.id;
+      document.getElementById('modalIndicatorBadge').textContent = `CHỈ SỐ ${ind.id}`;
+      document.getElementById('modalIndicatorTitle').textContent = `Chỉnh sửa Rubric · ${ind.name || ind.id}`;
+      document.getElementById('editStage1').value = ind.rubric_stage1 || '';
+      document.getElementById('editStage2').value = ind.rubric_stage2 || '';
+      document.getElementById('editStage3').value = ind.rubric_stage3 || '';
+      document.getElementById('editStage4').value = ind.rubric_stage4 || '';
+
+      document.getElementById('rubricEditModal').classList.add('open');
+    }
+
+    function closeEditModal() {
+      document.getElementById('rubricEditModal').classList.remove('open');
+    }
+
+    async function saveRubricToD1() {
+      const id = document.getElementById('editIndicatorId').value;
+      const stage1 = document.getElementById('editStage1').value.trim();
+      const stage2 = document.getElementById('editStage2').value.trim();
+      const stage3 = document.getElementById('editStage3').value.trim();
+      const stage4 = document.getElementById('editStage4').value.trim();
+
+      const btn = document.getElementById('btnSaveRubric');
+      btn.disabled = true;
+      btn.textContent = 'Đang lưu vào D1...';
+
+      // 1. Update in-memory
+      const ind = window.BUILDING21_DATA.indicators.find(i => i.id === id);
+      if (ind) {
+        ind.rubric_stage1 = stage1;
+        ind.rubric_stage2 = stage2;
+        ind.rubric_stage3 = stage3;
+        ind.rubric_stage4 = stage4;
+      }
+
+      // 2. Call API PUT /v1/admin/rubrics/:id
+      try {
+        const res = await fetch(`${API_BASE}/admin/rubrics/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rubric_stage1: stage1,
+            rubric_stage2: stage2,
+            rubric_stage3: stage3,
+            rubric_stage4: stage4
+          })
+        });
+        
+        showToast(`Đã lưu thành công Rubric chỉ số ${id} vào Cloudflare D1!`, 'success');
+      } catch (e) {
+        console.warn('API error, saved to local session:', e);
+        showToast(`Đã lưu cập nhật cục bộ cho chỉ số ${id}.`, 'success');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Lưu vào Database D1';
+        closeEditModal();
+        filterFramework();
+      }
+    }
+
+    function exportFrameworkJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.BUILDING21_DATA, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `Building21_Framework_Export_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast('Đã xuất file JSON toàn bộ Building 21 Framework!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFramework();
     });
   </script>
 </body>

@@ -154,19 +154,31 @@
             <div class="grid-4" style="gap: 8px;">
               <div class="rubric-stage-card ${currentStage === 1 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 1)">
                 <div class="rubric-stage-header">Stage 1</div>
-                <div class="rubric-stage-body">${ind.rubric_stage1}</div>
+                <div class="rubric-stage-body">${isEn ? ind.rubric_stage1 : (ind.rubric_stage1_vi || ind.rubric_stage1)}</div>
+                <div class="level-example">
+                  <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage1 || '') : (ind.example_stage1_vi || ind.example_stage1 || '')}
+                </div>
               </div>
               <div class="rubric-stage-card ${currentStage === 2 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 2)">
                 <div class="rubric-stage-header">Stage 2</div>
-                <div class="rubric-stage-body">${ind.rubric_stage2}</div>
+                <div class="rubric-stage-body">${isEn ? ind.rubric_stage2 : (ind.rubric_stage2_vi || ind.rubric_stage2)}</div>
+                <div class="level-example">
+                  <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage2 || '') : (ind.example_stage2_vi || ind.example_stage2 || '')}
+                </div>
               </div>
               <div class="rubric-stage-card ${currentStage === 3 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 3)">
                 <div class="rubric-stage-header">Stage 3</div>
-                <div class="rubric-stage-body">${ind.rubric_stage3}</div>
+                <div class="rubric-stage-body">${isEn ? ind.rubric_stage3 : (ind.rubric_stage3_vi || ind.rubric_stage3)}</div>
+                <div class="level-example">
+                  <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage3 || '') : (ind.example_stage3_vi || ind.example_stage3 || '')}
+                </div>
               </div>
               <div class="rubric-stage-card ${currentStage === 4 ? 'selected' : ''}" onclick="selectRatingDetail('${ind.id}', 4)">
                 <div class="rubric-stage-header">Stage 4</div>
-                <div class="rubric-stage-body">${ind.rubric_stage4}</div>
+                <div class="rubric-stage-body">${isEn ? ind.rubric_stage4 : (ind.rubric_stage4_vi || ind.rubric_stage4)}</div>
+                <div class="level-example">
+                  <span class="example-tag">${isEn ? '💡 e.g.' : '💡 Ví dụ:'}</span> ${isEn ? (ind.example_stage4 || '') : (ind.example_stage4_vi || ind.example_stage4 || '')}
+                </div>
               </div>
             </div>
           </div>

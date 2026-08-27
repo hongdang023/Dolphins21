@@ -266,6 +266,116 @@ router.delete('/v1/focus/:id', async (req, env) => {
   }
 });
 
+// Admin Endpoints
+router.put('/v1/admin/rubrics/:id', async (req, env) => {
+  try {
+    const indicatorId = req.params.id;
+    const body = await req.json(); // { rubric_stage1, rubric_stage2, rubric_stage3, rubric_stage4 }
+    
+    await env.DB.prepare(`
+      UPDATE framework_indicators
+      SET rubric_stage1 = ?, rubric_stage2 = ?, rubric_stage3 = ?, rubric_stage4 = ?
+      WHERE id = ?
+    `).bind(
+      body.rubric_stage1 || '',
+      body.rubric_stage2 || '',
+      body.rubric_stage3 || '',
+      body.rubric_stage4 || '',
+      indicatorId
+    ).run();
+
+    return jsonResponse({ success: true, indicator_id: indicatorId });
+  } catch (err) {
+    return jsonResponse(null, 500, { message: err.message });
+  }
+});
+
+router.get('/v1/admin/analytics', async (req, env) => {
+  try {
+    const { results: profiles } = await env.DB.prepare('SELECT COUNT(*) as total_profiles FROM profiles').all();
+    const totalProfiles = profiles?.[0]?.total_profiles || 0;
+
+    const { results: ratings } = await env.DB.prepare(`
+      SELECT stage, domain_id, COUNT(*) as count 
+      FROM indicator_ratings 
+      GROUP BY stage, domain_id
+    `).all();
+
+    const { results: domainAverages } = await env.DB.prepare(`
+      SELECT domain_id, AVG(stage) as avg_stage, COUNT(*) as rated_count
+      FROM indicator_ratings
+      GROUP BY domain_id
+    `).all();
+
+    const { results: totalRatingsRow } = await env.DB.prepare('SELECT COUNT(*) as total_ratings FROM indicator_ratings').all();
+    const totalRatings = totalRatingsRow?.[0]?.total_ratings || 0;
+
+    const { results: goalsCountRow } = await env.DB.prepare('SELECT COUNT(*) as active_goals FROM goals WHERE status = "active"').all();
+    const activeGoals = goalsCountRow?.[0]?.active_goals || 0;
+
+    const { results: evidenceCountRow } = await env.DB.prepare('SELECT COUNT(*) as total_evidence FROM evidence_notes').all();
+    const totalEvidence = evidenceCountRow?.[0]?.total_evidence || 0;
+
+    // Stage distribution
+    const stageDistribution = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    ratings.forEach(r => {
+      if (r.stage && stageDistribution[r.stage] !== undefined) {
+        stageDistribution[r.stage] += r.count;
+      }
+    });
+
+    const completionRate = totalProfiles > 0 ? Math.round((totalRatings / (totalProfiles * 117)) * 100) : (totalRatings > 0 ? Math.round((totalRatings / 117) * 100) : 0);
+
+    return jsonResponse({
+      total_profiles: totalProfiles,
+      total_ratings: totalRatings,
+      completion_rate_percent: Math.min(100, completionRate),
+      active_goals: activeGoals,
+      total_evidence: totalEvidence,
+      stage_distribution: stageDistribution,
+      domain_averages: domainAverages
+    });
+  } catch (err) {
+    return jsonResponse(null, 500, { message: err.message });
+  }
+});
+
+router.get('/v1/admin/profiles', async (req, env) => {
+  try {
+    const { results: profiles } = await env.DB.prepare('SELECT * FROM profiles ORDER BY updated_at DESC').all();
+    const { results: ratingsCount } = await env.DB.prepare('SELECT COUNT(*) as rated_count FROM indicator_ratings').all();
+    const ratedCount = ratingsCount?.[0]?.rated_count || 0;
+
+    const profilesWithProgress = profiles.map(p => ({
+      ...p,
+      rated_count: ratedCount,
+      completion_percent: Math.round((ratedCount / 117) * 100)
+    }));
+
+    return jsonResponse(profilesWithProgress);
+  } catch (err) {
+    return jsonResponse(null, 500, { message: err.message });
+  }
+});
+
+router.delete('/v1/admin/profiles/:id', async (req, env) => {
+  try {
+    const profileId = req.params.id;
+    if (profileId === 'main') {
+      await env.DB.prepare('DELETE FROM indicator_ratings').run();
+      await env.DB.prepare('DELETE FROM goals').run();
+      await env.DB.prepare('DELETE FROM evidence_notes').run();
+      await env.DB.prepare('DELETE FROM weekly_logs').run();
+      await env.DB.prepare('DELETE FROM pinned_competencies').run();
+    } else {
+      await env.DB.prepare('DELETE FROM profiles WHERE id = ?').bind(profileId).run();
+    }
+    return jsonResponse({ success: true, message: `Profile ${profileId} reset successfully` });
+  } catch (err) {
+    return jsonResponse(null, 500, { message: err.message });
+  }
+});
+
 // Catch all
 router.all('*', () => jsonResponse(null, 404, { message: 'Route not found' }));
 

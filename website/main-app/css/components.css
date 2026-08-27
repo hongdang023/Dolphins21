@@ -990,6 +990,28 @@
   line-height: 1.4;
 }
 
+.level-example {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+  line-height: 1.35;
+  font-style: normal;
+}
+
+.level-example .example-tag {
+  font-weight: 800;
+  color: var(--primary);
+  display: inline-block;
+  margin-right: 3px;
+}
+
+.level-button.active .level-example {
+  border-top-color: rgba(204, 78, 45, 0.25);
+  color: #7c2d12;
+}
+
 /* Evaluator Notes Section */
 .evidence-section {
   background-color: #fafaf9;
