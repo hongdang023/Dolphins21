@@ -1,0 +1,12 @@
+name = "dolphins21-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# Bind D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "dolphins21-db"
+database_id = "dolphins21-d1-placeholder"
+
+[vars]
+ENVIRONMENT = "production"

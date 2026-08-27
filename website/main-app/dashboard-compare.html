@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>So Sánh Snapshots – Dolphins21</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
+        <li><a href="focus.html" class="nav-link">Focus</a></li>
+        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="margin-bottom: 24px;">
+      <a href="dashboard.html" style="color: var(--muted-foreground); text-decoration: none; font-size: 14px; font-weight: 600;">← Quay lại Dashboard</a>
+      <h1 class="page-title" style="margin-top: 12px;">So Sánh Tiến Bộ Qua Các Snapshots</h1>
+      <p class="page-subtitle">Xem dữ liệu đối sánh Before vs. After trên biểu đồ Radar và bảng phân tích biến động điểm năng lực.</p>
+    </div>
+
+    <!-- Snapshot Selector -->
+    <div class="surface-card" style="margin-bottom: 24px;">
+      <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+          <label class="form-label">Snapshot A (Gốc / Trước đó)</label>
+          <select id="selectSnapA" class="form-select"></select>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+          <label class="form-label">Snapshot B (Hiện tại / Sau đó)</label>
+          <select id="selectSnapB" class="form-select"></select>
+        </div>
+        <button id="btnCompare" class="btn btn-primary" style="margin-top: 22px;">So Sánh →</button>
+      </div>
+    </div>
+
+    <!-- Comparison Radar Chart -->
+    <div class="surface-card" style="margin-bottom: 24px;">
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Biểu Đồ Chồng Radar (Overlay Comparison)</h3>
+      <div style="position: relative; height: 350px; width: 100%;">
+        <canvas id="compareRadar"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/building21-data.js"></script>
+  <script src="js/api-client.js"></script>
+  <script>
+    let compareChart = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const snapshots = DolphinsStore.getSnapshots();
+      const selA = document.getElementById('selectSnapA');
+      const selB = document.getElementById('selectSnapB');
+
+      if (snapshots.length === 0) {
+        // Create mock snapshot for first comparison
+        DolphinsStore.createSnapshot('Bản chụp khởi đầu');
+      }
+
+      const allSnaps = DolphinsStore.getSnapshots();
+      selA.innerHTML = allSnaps.map((s, idx) => `<option value="${s.id}">${s.label} (${new Date(s.created_at).toLocaleDateString('vi-VN')})</option>`).join('');
+      selB.innerHTML = `<option value="current">Điểm đánh giá hiện tại (Live)</option>` + selA.innerHTML;
+
+      document.getElementById('btnCompare').addEventListener('click', renderComparison);
+      renderComparison();
+    });
+
+    function renderComparison() {
+      const snapAId = document.getElementById('selectSnapA').value;
+      const snapBId = document.getElementById('selectSnapB').value;
+      const snapshots = DolphinsStore.getSnapshots();
+      const currentRatings = DolphinsStore.getRatings();
+
+      const snapA = snapshots.find(s => s.id === snapAId);
+      
+      let ratingsA = {};
+      if (snapA && snapA.items) {
+        snapA.items.forEach(it => { ratingsA[it.indicator_id] = it; });
+      }
+
+      let ratingsB = currentRatings;
+      if (snapBId !== 'current') {
+        const snapB = snapshots.find(s => s.id === snapBId);
+        if (snapB && snapB.items) {
+          ratingsB = {};
+          snapB.items.forEach(it => { ratingsB[it.indicator_id] = it; });
+        }
+      }
+
+      // Calculate domains avg
+      const calcDomainAvg = (ratingsObj) => {
+        return window.BUILDING21_DATA.domains.map(d => {
+          const dIndicators = window.BUILDING21_DATA.indicators.filter(ind => {
+            const comp = window.BUILDING21_DATA.competencies.find(c => c.id === ind.competency_id);
+            return comp && comp.domain_id === d.id;
+          });
+          let sum = 0, count = 0;
+          dIndicators.forEach(ind => {
+            if (ratingsObj[ind.id] && ratingsObj[ind.id].stage) {
+              sum += ratingsObj[ind.id].stage;
+              count++;
+            }
+          });
+          return count ? (sum / count).toFixed(1) : 0;
+        });
+      };
+
+      const dataA = calcDomainAvg(ratingsA);
+      const dataB = calcDomainAvg(ratingsB);
+
+      const ctx = document.getElementById('compareRadar').getContext('2d');
+      if (compareChart) compareChart.destroy();
+
+      compareChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'],
+          datasets: [
+            {
+              label: 'Snapshot A (Trước)',
+              data: dataA,
+              backgroundColor: 'rgba(148, 163, 184, 0.2)',
+              borderColor: '#94a3b8',
+              borderWidth: 2
+            },
+            {
+              label: 'Snapshot B (Sau)',
+              data: dataB,
+              backgroundColor: 'rgba(204, 78, 45, 0.25)',
+              borderColor: '#cc4e2d',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: { min: 0, max: 4, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

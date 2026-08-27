@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thiết lập hồ sơ – Dolphins21</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
+        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="max-width: 680px; margin: 0 auto;">
+      <span class="eyebrow">Onboarding & Setup</span>
+      <h1 class="page-title">Chào mừng đến với Dolphins21</h1>
+      <p class="page-subtitle">
+        Khởi tạo hồ sơ của bạn và hiểu rõ quy tắc 4 Stages trước khi bước vào hành trình tự nâng chuẩn chuyên môn.
+      </p>
+
+      <div class="surface-card" style="margin-bottom: 24px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">1. Hiểu 4 Cấp Độ Năng Lực (Stages)</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+          <div style="padding: 10px; border-left: 3px solid var(--stage-1); background: var(--neutral-50);">
+            <strong>Stage 1 (Novice):</strong> Đang bắt đầu làm quen, thực hiện không thường xuyên hoặc theo chỉ đạo.
+          </div>
+          <div style="padding: 10px; border-left: 3px solid var(--stage-2); background: var(--neutral-50);">
+            <strong>Stage 2 (Developing):</strong> Đang phát triển, thực hiện khá đều đặn nhưng cần hỗ trợ hoặc điều chỉnh.
+          </div>
+          <div style="padding: 10px; border-left: 3px solid var(--stage-3); background: var(--neutral-50);">
+            <strong>Stage 3 (Proficient):</strong> Thành thạo, chủ động thu thập dữ liệu, áp dụng nhất quán và linh hoạt.
+          </div>
+          <div style="padding: 10px; border-left: 3px solid var(--stage-4); background: var(--neutral-50);">
+            <strong>Stage 4 (Mentor / Expert):</strong> Đạt mức hình mẫu, dẫn dắt đồng nghiệp, cải tiến liên tục hệ thống.
+          </div>
+        </div>
+      </div>
+
+      <div class="surface-card">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">2. Thông Tin Hồ Sơ Giáo Viên</h3>
+        <form id="profileForm">
+          <div class="form-group">
+            <label class="form-label">Họ và tên của bạn</label>
+            <input type="text" id="nameInput" class="form-input" required placeholder="Ví dụ: Nguyễn Văn A">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Môn giảng dạy / Lĩnh vực</label>
+            <input type="text" id="subjectInput" class="form-input" required placeholder="Ví dụ: Toán học, STEM, Tiếng Anh">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số năm kinh nghiệm giảng dạy</label>
+            <input type="number" id="yearsInput" class="form-input" min="0" max="50" placeholder="Số năm">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Trường học / Tổ chức</label>
+            <input type="text" id="schoolInput" class="form-input" placeholder="Tên trường học">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
+            Lưu hồ sơ và vào Dashboard →
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profile = DolphinsStore.getProfile();
+      if (profile) {
+        document.getElementById('nameInput').value = profile.name || '';
+        document.getElementById('subjectInput').value = profile.subject || '';
+        document.getElementById('yearsInput').value = profile.years_experience || '';
+        document.getElementById('schoolInput').value = profile.school || '';
+      }
+
+      document.getElementById('profileForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        DolphinsStore.saveProfile({
+          name: document.getElementById('nameInput').value,
+          subject: document.getElementById('subjectInput').value,
+          years_experience: parseInt(document.getElementById('yearsInput').value) || 0,
+          school: document.getElementById('schoolInput').value
+        });
+        window.location.href = 'dashboard.html';
+      });
+    });
+  </script>
+</body>
+</html>

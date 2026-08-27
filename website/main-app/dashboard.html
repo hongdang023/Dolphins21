@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Tổng Quan – Dolphins21</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
+        <li><a href="focus.html" class="nav-link">Focus</a></li>
+        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+        <li><a href="export.html" class="nav-link">Xuất dữ liệu</a></li>
+        <li><a href="checkin.html" class="btn btn-primary btn-sm">⚡ Check-in</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <span class="eyebrow" id="teacherGreeting">Teacher Growth Overview</span>
+        <h1 class="page-title" style="margin-bottom: 4px;">Competency Dashboard</h1>
+        <p style="color: var(--muted-foreground); font-size: 14px;" id="teacherProfileSubtitle">Giáo viên: -- | Môn: --</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="assess.html" class="btn btn-primary">Tiếp tục đánh giá →</a>
+        <a href="dashboard-compare.html" class="btn btn-secondary">So sánh Snapshots</a>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid-5" style="margin-bottom: 24px;">
+      <div class="surface-card" style="padding: 16px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Tiến độ đánh giá</span>
+        <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statProgress">0 / 117</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="statProgressBar" style="width: 0%;"></div></div>
+      </div>
+
+      <div class="surface-card" style="padding: 16px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Điểm Stage TB</span>
+        <div style="font-size: 24px; font-weight: 900; margin: 4px 0; color: var(--primary);" id="statAvgStage">0.0</div>
+        <span style="font-size: 12px; color: var(--muted-foreground);">trên thang điểm 4.0</span>
+      </div>
+
+      <div class="surface-card" style="padding: 16px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Weekly Streak</span>
+        <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statStreak">0 tuần 🔥</div>
+        <span style="font-size: 12px; color: var(--muted-foreground);">Duy trì liên tục</span>
+      </div>
+
+      <div class="surface-card" style="padding: 16px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Mục tiêu Active</span>
+        <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statGoals">0</div>
+        <a href="goals.html" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 600;">Xem chi tiết →</a>
+      </div>
+
+      <div class="surface-card" style="padding: 16px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase;">Minh chứng (Evidence)</span>
+        <div style="font-size: 24px; font-weight: 900; margin: 4px 0;" id="statEvidence">0</div>
+        <a href="evidence.html" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 600;">Xem Vault →</a>
+      </div>
+    </div>
+
+    <!-- Next Action Banner -->
+    <div class="next-action-banner" id="nextActionBox">
+      <div>
+        <span class="eyebrow" style="margin-bottom: 2px;">Action over Insight</span>
+        <div class="next-action-text" id="nextActionText">Đang tải hành động đề xuất...</div>
+      </div>
+      <a href="assess.html" class="btn btn-primary btn-sm" id="nextActionBtn">Thực hiện ngay →</a>
+    </div>
+
+    <!-- Radar Chart & Pinned Focus Grid -->
+    <div class="grid-2" style="margin-bottom: 32px;">
+      <!-- Chart -->
+      <div class="surface-card">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Biểu Đồ Năng Lực 5 Trục (Radar Chart)</h3>
+        <div style="position: relative; height: 320px; width: 100%;">
+          <canvas id="competencyRadar"></canvas>
+        </div>
+      </div>
+
+      <!-- Focus Competencies -->
+      <div class="surface-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-size: 18px; font-weight: 800;">Năng Lực Đang Focus (Ưu tiên)</h3>
+          <a href="focus.html" class="btn btn-secondary btn-sm">Quản lý Focus</a>
+        </div>
+        <div id="focusList" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Render dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Domains Progress Breakdown -->
+    <div class="surface-card">
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Tiến Độ Chi Tiết Theo 5 Domains</h3>
+      <div id="domainsGrid" class="grid-5">
+        <!-- Render 5 domains dynamically -->
+      </div>
+    </div>
+  </main>
+
+  <script src="js/building21-data.js"></script>
+  <script src="js/api-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profile = DolphinsStore.getProfile();
+      document.getElementById('teacherProfileSubtitle').textContent = 
+        `Giáo viên: ${profile.name || 'Thầy/Cô'} | Môn: ${profile.subject || 'Chưa cập nhật'} | Đơn vị: ${profile.school || 'Dolphins'}`;
+
+      const ratings = DolphinsStore.getRatings();
+      const ratedKeys = Object.keys(ratings);
+      const totalIndicators = window.BUILDING21_DATA.indicators.length;
+      const progressPercent = Math.round((ratedKeys.length / totalIndicators) * 100);
+
+      document.getElementById('statProgress').textContent = `${ratedKeys.length} / ${totalIndicators}`;
+      document.getElementById('statProgressBar').style.width = `${progressPercent}%`;
+
+      // Calculate Average Stage
+      let sumStage = 0;
+      let ratedCount = 0;
+      ratedKeys.forEach(k => {
+        if (ratings[k].stage) {
+          sumStage += ratings[k].stage;
+          ratedCount++;
+        }
+      });
+      const avg = ratedCount ? (sumStage / ratedCount).toFixed(1) : '0.0';
+      document.getElementById('statAvgStage').textContent = avg;
+
+      // Stats
+      document.getElementById('statStreak').textContent = `${DolphinsStore.getStreak()} tuần 🔥`;
+      document.getElementById('statGoals').textContent = DolphinsStore.getGoals().length;
+      document.getElementById('statEvidence').textContent = DolphinsStore.getEvidence().length;
+
+      // Calculate 5 domains average for radar
+      const domainAvgs = window.BUILDING21_DATA.domains.map(d => {
+        const dIndicators = window.BUILDING21_DATA.indicators.filter(ind => {
+          const comp = window.BUILDING21_DATA.competencies.find(c => c.id === ind.competency_id);
+          return comp && comp.domain_id === d.id;
+        });
+        let dSum = 0, dCount = 0;
+        dIndicators.forEach(ind => {
+          if (ratings[ind.id] && ratings[ind.id].stage) {
+            dSum += ratings[ind.id].stage;
+            dCount++;
+          }
+        });
+        return dCount ? (dSum / dCount).toFixed(1) : 0;
+      });
+
+      // Render Radar Chart
+      const ctx = document.getElementById('competencyRadar').getContext('2d');
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'],
+          datasets: [{
+            label: 'Điểm Đánh Giá Hiện Tại',
+            data: domainAvgs,
+            backgroundColor: 'rgba(204, 78, 45, 0.2)',
+            borderColor: '#cc4e2d',
+            pointBackgroundColor: '#cc4e2d',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#cc4e2d',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 4,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+
+      // Next action recommendation
+      if (ratedKeys.length === 0) {
+        document.getElementById('nextActionText').textContent = 'Bạn chưa đánh giá năng lực nào. Hãy bắt đầu với Domain 1: Building Relationships!';
+        document.getElementById('nextActionBtn').href = 'assess.html?domain=TC1';
+      } else {
+        document.getElementById('nextActionText').textContent = 'Tiếp tục hoàn thiện các chỉ số còn lại hoặc ghi nhận bằng chứng (Evidence) cho tuần này.';
+        document.getElementById('nextActionBtn').href = 'assess.html';
+      }
+
+      // Render Focus list
+      const focusList = DolphinsStore.getFocus();
+      const focusContainer = document.getElementById('focusList');
+      if (focusList.length === 0) {
+        focusContainer.innerHTML = '<p style="color: var(--muted-foreground); font-size: 14px;">Chưa chọn năng lực nào để focus. Hãy vào mục Focus để chọn 2-3 năng lực ưu tiên.</p>';
+      } else {
+        focusContainer.innerHTML = focusList.map(compId => {
+          const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId };
+          return `
+            <div style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span class="eyebrow" style="font-size: 11px; margin-bottom: 2px;">${comp.id}</span>
+                <div style="font-weight: 700; font-size: 14px;">${comp.name}</div>
+              </div>
+              <a href="focus-detail.html?comp=${comp.id}" class="btn btn-secondary btn-sm">Chi tiết →</a>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render Domains Grid
+      const domGrid = document.getElementById('domainsGrid');
+      domGrid.innerHTML = window.BUILDING21_DATA.domains.map((d, idx) => {
+        return `
+          <div class="surface-card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span class="eyebrow" style="font-size: 11px;">Domain ${idx+1}</span>
+              <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 8px;">${d.name}</h4>
+              <div style="font-size: 20px; font-weight: 900; color: var(--primary);">${domainAvgs[idx]} / 4.0</div>
+            </div>
+            <a href="assess.html?domain=${d.id}" class="btn btn-secondary btn-sm" style="margin-top: 12px; width: 100%;">Đánh giá →</a>
+          </div>
+        `;
+      }).join('');
+    });
+  </script>
+</body>
+</html>

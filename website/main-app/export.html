@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xuất Dữ Liệu – Dolphins21</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
+        <li><a href="focus.html" class="nav-link">Focus</a></li>
+        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+        <li><a href="export.html" class="nav-link active">Xuất dữ liệu</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="max-width: 720px; margin: 0 auto;">
+      <span class="eyebrow">Data Portability</span>
+      <h1 class="page-title">Xuất & Sao Lưu Dữ Liệu Hồ Sơ</h1>
+      <p class="page-subtitle">Dữ liệu hoàn toàn thuộc quyền sở hữu của bạn. Bạn có thể xuất file JSON để sao lưu hoặc chuyển đổi sang thiết bị khác.</p>
+
+      <div class="surface-card" style="margin-bottom: 24px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;">1. Sao Lưu Toàn Bộ Dữ Liệu (Backup JSON)</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 16px;">
+          Bao gồm: Thông tin Profile, toàn bộ điểm đánh giá (Ratings), Snapshots, Mục tiêu SMART và Evidence Vault.
+        </p>
+        <button id="btnExportJSON" class="btn btn-primary">Tải về file dolphins21_backup.json ↓</button>
+      </div>
+
+      <div class="surface-card">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 12px;">2. Khôi Phục Dữ Liệu (Import JSON)</h3>
+        <p style="font-size: 14px; color: var(--muted-foreground); margin-bottom: 16px;">
+          Tải lên file JSON đã sao lưu từ trước để khôi phục trạng thái làm việc.
+        </p>
+        <input type="file" id="importFileInput" accept=".json" style="margin-bottom: 16px; display: block;">
+        <button id="btnImportJSON" class="btn btn-secondary">Khôi phục dữ liệu từ file</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btnExportJSON').addEventListener('click', () => {
+        const fullBackup = {
+          app: 'Dolphins21',
+          version: '1.0',
+          exportedAt: new Date().toISOString(),
+          profile: DolphinsStore.getProfile(),
+          ratings: DolphinsStore.getRatings(),
+          snapshots: DolphinsStore.getSnapshots(),
+          goals: DolphinsStore.getGoals(),
+          evidence: DolphinsStore.getEvidence(),
+          weeklyLogs: DolphinsStore.getWeeklyLogs(),
+          focus: DolphinsStore.getFocus()
+        };
+
+        const blob = new Blob([JSON.stringify(fullBackup, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `dolphins21_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('btnImportJSON').addEventListener('click', () => {
+        const fileInput = document.getElementById('importFileInput');
+        if (!fileInput.files.length) {
+          alert('Vui lòng chọn file JSON để khôi phục.');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data.profile) DolphinsStore.saveProfile(data.profile);
+            if (data.ratings) DolphinsStore.set(DolphinsStore.KEYS.RATINGS, data.ratings);
+            if (data.snapshots) DolphinsStore.set(DolphinsStore.KEYS.SNAPSHOTS, data.snapshots);
+            if (data.goals) DolphinsStore.set(DolphinsStore.KEYS.GOALS, data.goals);
+            if (data.evidence) DolphinsStore.set(DolphinsStore.KEYS.EVIDENCE, data.evidence);
+            if (data.weeklyLogs) DolphinsStore.set(DolphinsStore.KEYS.WEEKLY_LOGS, data.weeklyLogs);
+            if (data.focus) DolphinsStore.set(DolphinsStore.KEYS.FOCUS, data.focus);
+
+            alert('Khôi phục dữ liệu thành công! Đang chuyển về Dashboard...');
+            window.location.href = 'dashboard.html';
+          } catch (err) {
+            alert('File JSON không hợp lệ: ' + err.message);
+          }
+        };
+        reader.readAsText(fileInput.files[0]);
+      });
+    });
+  </script>
+</body>
+</html>

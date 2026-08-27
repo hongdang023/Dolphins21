@@ -1,0 +1,16 @@
+{
+  "name": "dolphins21-api",
+  "version": "1.0.0",
+  "description": "API Gateway for Dolphins21 - Teacher Competency Growth OS",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "itty-router": "^5.0.18"
+  },
+  "devDependencies": {
+    "wrangler": "^3.100.0"
+  }
+}

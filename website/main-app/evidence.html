@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidence Vault – Dolphins21</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
+        <li><a href="focus.html" class="nav-link">Focus</a></li>
+        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="evidence.html" class="nav-link active">Evidence</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <span class="eyebrow">Proof of Work</span>
+        <h1 class="page-title">Evidence Vault (Kho Minh Chứng)</h1>
+        <p class="page-subtitle">Sự phát triển chỉ thực sự tồn tại khi có bằng chứng. Lưu lại các câu chuyện, phản hồi học sinh và bài tập thực hành.</p>
+      </div>
+      <button id="btnNewEvidence" class="btn btn-primary">+ Thêm Minh Chứng Mới</button>
+    </div>
+
+    <!-- Evidence List -->
+    <div id="evidenceContainer" style="display: flex; flex-direction: column; gap: 16px;">
+      <!-- Dynamic list -->
+    </div>
+  </main>
+
+  <script src="js/building21-data.js"></script>
+  <script src="js/api-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderEvidence();
+
+      document.getElementById('btnNewEvidence').addEventListener('click', () => {
+        const compId = prompt('Nhập mã Competency liên quan (VD: TC1.1, TC5.7):', 'TC1.1');
+        const content = prompt('Nhập chi tiết minh chứng thực tế từ lớp học:');
+        if (compId && content) {
+          DolphinsStore.saveEvidence({
+            indicator_id: `${compId}-IND-1`,
+            competency_id: compId,
+            date: new Date().toISOString().split('T')[0],
+            content: content,
+            tags: [compId]
+          });
+          renderEvidence();
+        }
+      });
+    });
+
+    function renderEvidence() {
+      const container = document.getElementById('evidenceContainer');
+      const list = DolphinsStore.getEvidence();
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="surface-card" style="text-align: center; padding: 48px 20px;">
+            <p style="color: var(--muted-foreground); margin-bottom: 16px;">Chưa có minh chứng nào trong Evidence Vault.</p>
+            <button onclick="document.getElementById('btnNewEvidence').click()" class="btn btn-primary">+ Ghi Nhận Minh Chứng Đầu Tiên</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(ev => {
+        const comp = window.BUILDING21_DATA.competencies.find(c => c.id === ev.competency_id) || { id: ev.competency_id, name: ev.competency_id };
+        return `
+          <div class="surface-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <span class="eyebrow">${ev.competency_id} · ${comp.name}</span>
+                <span style="font-size: 13px; color: var(--muted-foreground); margin-left: 8px;">${ev.date}</span>
+              </div>
+              <span class="badge" style="background: var(--accent); color: var(--primary);">Minh chứng thực hành</span>
+            </div>
+            <p style="font-size: 15px; line-height: 1.6; color: var(--foreground); white-space: pre-wrap;">${ev.content}</p>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus & Ưu Tiên Phát Triển – Dolphins21</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="assess.html" class="nav-link">Đánh giá</a></li>
+        <li><a href="focus.html" class="nav-link active">Focus</a></li>
+        <li><a href="goals.html" class="nav-link">Mục tiêu</a></li>
+        <li><a href="evidence.html" class="nav-link">Evidence</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="margin-bottom: 24px;">
+      <span class="eyebrow">Targeted Growth</span>
+      <h1 class="page-title">Quản Lý Năng Lực Focus</h1>
+      <p class="page-subtitle">Hệ thống phân tích điểm đánh giá để hiển thị các năng lực đang phát triển nhất (lowest score), hoặc bạn có thể tự ghim (pin) 2-3 năng lực theo ý muốn.</p>
+    </div>
+
+    <!-- Pinned Active Focus -->
+    <div class="surface-card" style="margin-bottom: 32px;">
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">📌 Năng Lực Đang Được Ghim (Pinned)</h3>
+      <div id="pinnedGrid" class="grid-3">
+        <!-- Render pinned items -->
+      </div>
+    </div>
+
+    <!-- All Competencies Sorted by Score -->
+    <div class="surface-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="font-size: 18px; font-weight: 800;">Toàn Bộ 39 Competencies (Xếp Theo Điểm Đang Phát Triển)</h3>
+        <span style="font-size: 13px; color: var(--muted-foreground);">Bấm nút Ghim để chọn tiêu điểm</span>
+      </div>
+      
+      <div id="sortedList" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Render full list -->
+      </div>
+    </div>
+  </main>
+
+  <script src="js/building21-data.js"></script>
+  <script src="js/api-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFocusPage();
+    });
+
+    function renderFocusPage() {
+      const ratings = DolphinsStore.getRatings();
+      const focus = DolphinsStore.getFocus();
+
+      // Calculate score for each competency
+      const compScores = window.BUILDING21_DATA.competencies.map(c => {
+        const indList = window.BUILDING21_DATA.indicators.filter(ind => ind.competency_id === c.id);
+        let sum = 0, count = 0;
+        indList.forEach(ind => {
+          if (ratings[ind.id] && ratings[ind.id].stage) {
+            sum += ratings[ind.id].stage;
+            count++;
+          }
+        });
+        const avg = count ? (sum / count) : 0;
+        return {
+          ...c,
+          avgScore: avg,
+          ratedCount: count,
+          totalIndicators: indList.length,
+          isPinned: focus.includes(c.id)
+        };
+      });
+
+      // Sort by avgScore ASC (lowest first for focus)
+      compScores.sort((a, b) => a.avgScore - b.avgScore);
+
+      // Render Pinned Grid
+      const pinnedItems = compScores.filter(c => c.isPinned);
+      const pinnedContainer = document.getElementById('pinnedGrid');
+      if (pinnedItems.length === 0) {
+        pinnedContainer.innerHTML = '<p style="color: var(--muted-foreground); font-size: 14px;">Chưa có năng lực nào được ghim. Hãy chọn bên dưới.</p>';
+      } else {
+        pinnedContainer.innerHTML = pinnedItems.map(c => `
+          <div style="border: 2px solid var(--primary); background: var(--accent); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span class="eyebrow">${c.id} · Domain ${c.domain_id}</span>
+              <h4 style="font-size: 15px; font-weight: 800; margin: 4px 0 8px;">${c.name}</h4>
+              <div style="font-size: 18px; font-weight: 900; color: var(--primary); margin-bottom: 8px;">
+                ${c.avgScore ? c.avgScore.toFixed(1) : 'Chưa đánh giá'} / 4.0
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <a href="focus-detail.html?comp=${c.id}" class="btn btn-primary btn-sm" style="flex: 1;">Vào Focus →</a>
+              <button onclick="togglePin('${c.id}')" class="btn btn-secondary btn-sm">Bỏ ghim</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Sorted Full List
+      const listContainer = document.getElementById('sortedList');
+      listContainer.innerHTML = compScores.map(c => `
+        <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: #fff; flex-wrap: wrap; gap: 12px;">
+          <div style="max-width: 70%;">
+            <span class="eyebrow" style="font-size: 11px;">${c.id} · ${c.domain_id}</span>
+            <div style="font-size: 15px; font-weight: 700;">${c.name}</div>
+            <span style="font-size: 12px; color: var(--muted-foreground);">Đã đánh giá: ${c.ratedCount} / ${c.totalIndicators} chỉ số</span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="text-align: right;">
+              <div style="font-size: 18px; font-weight: 900; color: ${c.avgScore ? 'var(--primary)' : 'var(--muted-foreground)'};">
+                ${c.avgScore ? c.avgScore.toFixed(1) : '—'}
+              </div>
+              <span style="font-size: 11px; color: var(--muted-foreground);">Stage TB</span>
+            </div>
+
+            <button onclick="togglePin('${c.id}')" class="btn ${c.isPinned ? 'btn-primary' : 'btn-secondary'} btn-sm">
+              ${c.isPinned ? '★ Đang Ghim' : '☆ Ghim Focus'}
+            </button>
+            <a href="focus-detail.html?comp=${c.id}" class="btn btn-secondary btn-sm">Chi tiết →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function togglePin(compId) {
+      DolphinsStore.toggleFocus(compId);
+      renderFocusPage();
+    }
+  </script>
+</body>
+</html>

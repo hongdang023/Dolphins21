@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Building 21 – Dolphins21 Admin</title>
+  <link rel="stylesheet" href="../main-app/css/tokens.css">
+  <link rel="stylesheet" href="../main-app/css/components.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">🐬</div>
+        <span>Dolphins21 Admin</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Tổng quan</a></li>
+        <li><a href="framework.html" class="nav-link active">Quản lý Building 21</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div style="margin-bottom: 24px;">
+      <span class="eyebrow">Framework Master Data</span>
+      <h1 class="page-title">Quản Lý Nội Dung Rubric Building 21</h1>
+      <p class="page-subtitle">Xem toàn bộ 117 indicators và tiêu chí 4 stages được trích xuất từ Excel gốc.</p>
+    </div>
+
+    <div id="adminFrameworkList" style="display: flex; flex-direction: column; gap: 24px;">
+      <!-- Dynamic rendering -->
+    </div>
+  </main>
+
+  <script src="../main-app/js/building21-data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('adminFrameworkList');
+      container.innerHTML = window.BUILDING21_DATA.domains.map(d => {
+        const comps = window.BUILDING21_DATA.competencies.filter(c => c.domain_id === d.id);
+
+        return `
+          <div class="surface-card">
+            <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 16px; color: var(--primary);">
+              ${d.id} · ${d.name}
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              ${comps.map(c => {
+                const indList = window.BUILDING21_DATA.indicators.filter(i => i.competency_id === c.id);
+                return `
+                  <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px;">
+                    <div style="font-weight: 800; font-size: 16px; margin-bottom: 4px;">${c.id} · ${c.name}</div>
+                    <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 12px;">Số lượng: ${indList.length} Indicators</div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      ${indList.map(ind => `
+                        <div style="background: var(--neutral-50); padding: 10px; border-radius: var(--radius-sm); font-size: 13px;">
+                          <strong>Chỉ số ${ind.id}:</strong>
+                          <div style="margin-top: 4px; color: var(--neutral-700);"><strong>Stage 1:</strong> ${ind.rubric_stage1.substring(0, 120)}...</div>
+                          <div style="margin-top: 2px; color: var(--neutral-700);"><strong>Stage 4:</strong> ${ind.rubric_stage4.substring(0, 120)}...</div>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  </script>
+</body>
+</html>
