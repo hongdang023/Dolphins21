@@ -6,7 +6,6 @@
   <title>Dolphins21 – Dashboard</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header class="app-header">
@@ -116,43 +115,12 @@
       <a href="assess.html" class="btn btn-primary btn-sm" id="nextActionBtn" data-i18n="btn_action_now">Thực hiện ngay →</a>
     </div>
 
-    <!-- Radar Chart & Pinned Focus Grid -->
-    <div class="grid-2" style="margin-bottom: 32px;">
-      <!-- Chart -->
-      <div class="surface-card">
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" data-i18n="dash_radar_title">Radar Chart</h3>
-        <div style="position: relative; height: 320px; width: 100%;">
-          <canvas id="competencyRadar"></canvas>
-        </div>
-      </div>
-
-      <!-- Focus Competencies -->
-      <div class="surface-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-size: 18px; font-weight: 800;" data-i18n="focus_pinned_title">📌 Pinned Focus</h3>
-          <a href="growth.html?tab=tabFocus" class="btn btn-secondary btn-sm" data-i18n="btn_view_details">Chi tiết →</a>
-        </div>
-        <div id="focusList" style="display: flex; flex-direction: column; gap: 12px;">
-          <!-- Render dynamically -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Domains Progress Breakdown -->
-    <div class="surface-card">
-      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;" id="domainsBreakdownTitle">Tiến độ 5 Domains</h3>
-      <div id="domainsGrid" class="grid-5">
-        <!-- Render 5 domains dynamically -->
-      </div>
-    </div>
   </main>
 
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
   <script src="js/i18n.js"></script>
   <script>
-    let radarChartInstance = null;
-
     function renderDashboard() {
       const isEn = I18N.getLang() === 'en';
       const profile = DolphinsStore.getProfile();
@@ -165,7 +133,6 @@
       document.getElementById('teacherProfileSubtitle').textContent = 
         `${teacherLabel}: ${profile.name || (isEn ? 'Educator' : 'Thầy/Cô')} | ${subjectLabel}: ${profile.subject || (isEn ? 'Not set' : 'Chưa cập nhật')} | ${schoolLabel}: ${profile.school || defaultSchool}`;
 
-      document.getElementById('domainsBreakdownTitle').textContent = isEn ? 'Progress by 5 Domains' : 'Tiến độ 5 Domains';
       document.getElementById('streakSubtext').textContent = isEn ? 'Active streak' : 'Duy trì đều đặn';
       document.getElementById('sampleBannerText').textContent = isEn ? '💡 You are viewing sample data of an innovative educator.' : '💡 Bạn đang xem dữ liệu mẫu giáo viên đổi mới.';
       document.getElementById('btnClearSample').textContent = isEn ? 'My Real Data' : 'Dữ liệu thật của tôi';
@@ -212,57 +179,6 @@
       document.getElementById('statGoals').textContent = DolphinsStore.getGoals().length;
       document.getElementById('statEvidence').textContent = DolphinsStore.getEvidence().length;
 
-      // Calculate 5 domains average for radar
-      const domainAvgs = window.BUILDING21_DATA.domains.map(d => {
-        const dIndicators = window.BUILDING21_DATA.indicators.filter(ind => {
-          const comp = window.BUILDING21_DATA.competencies.find(c => c.id === ind.competency_id);
-          return comp && comp.domain_id === d.id;
-        });
-        let dSum = 0, dCount = 0;
-        dIndicators.forEach(ind => {
-          if (ratings[ind.id] && ratings[ind.id].stage) {
-            dSum += ratings[ind.id].stage;
-            dCount++;
-          }
-        });
-        return dCount ? (dSum / dCount).toFixed(1) : 0;
-      });
-
-      // Render Radar Chart
-      const radarLabels = ['TC.1 Relationships', 'TC.2 Growth & Mindset', 'TC.3 Advisory', 'TC.4 Engagement', 'TC.5 Personalization'];
-
-      const ctx = document.getElementById('competencyRadar').getContext('2d');
-      if (radarChartInstance) radarChartInstance.destroy();
-
-      radarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: radarLabels,
-          datasets: [{
-            label: isEn ? 'Current Assessment' : 'Điểm Đánh Giá',
-            data: domainAvgs,
-            backgroundColor: 'rgba(204, 78, 45, 0.2)',
-            borderColor: '#cc4e2d',
-            pointBackgroundColor: '#cc4e2d',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: '#cc4e2d',
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            r: {
-              min: 0,
-              max: 4,
-              ticks: { stepSize: 1 }
-            }
-          }
-        }
-      });
-
       // Next action recommendation
       if (ratedKeys.length === 0) {
         document.getElementById('nextActionText').textContent = isEn 
@@ -275,41 +191,6 @@
           : 'Tiếp tục đánh giá các tiêu chí còn lại hoặc ghi 1 Evidence tuần này.';
         document.getElementById('nextActionBtn').href = 'assess.html';
       }
-
-      // Render Focus list
-      const focusList = DolphinsStore.getFocus();
-      const focusContainer = document.getElementById('focusList');
-      if (focusList.length === 0) {
-        focusContainer.innerHTML = `<p style="color: var(--muted-foreground); font-size: 14px;">${isEn ? 'No focus competencies selected. Choose priorities in Growth Plan.' : 'Chưa chọn năng lực Focus. Hãy chọn tiêu điểm trong Kế hoạch.'}</p>`;
-      } else {
-        focusContainer.innerHTML = focusList.map(compId => {
-          const comp = window.BUILDING21_DATA.competencies.find(c => c.id === compId) || { id: compId, name: compId };
-          return `
-            <div style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <span class="eyebrow" style="font-size: 11px; margin-bottom: 2px;">${comp.id}</span>
-                <div style="font-weight: 700; font-size: 14px;">${comp.name}</div>
-              </div>
-              <a href="focus-detail.html?comp=${comp.id}" class="btn btn-secondary btn-sm">${isEn ? 'Details →' : 'Chi tiết →'}</a>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // Render Domains Grid
-      const domGrid = document.getElementById('domainsGrid');
-      domGrid.innerHTML = window.BUILDING21_DATA.domains.map((d, idx) => {
-        return `
-          <div class="surface-card" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <span class="eyebrow" style="font-size: 11px;">Domain ${idx+1}</span>
-              <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 8px;">${d.name}</h4>
-              <div style="font-size: 20px; font-weight: 900; color: var(--primary);">${domainAvgs[idx]} / 4.0</div>
-            </div>
-            <a href="assess.html?domain=${d.id}" class="btn btn-secondary btn-sm" style="margin-top: 12px; width: 100%;">${isEn ? 'Assess →' : 'Đánh giá →'}</a>
-          </div>
-        `;
-      }).join('');
 
       // Sample data banner handling
       if (DolphinsStore.isSampleDataLoaded()) {
