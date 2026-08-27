@@ -270,5 +270,6 @@ router.delete('/v1/focus/:id', async (req, env) => {
 router.all('*', () => jsonResponse(null, 404, { message: 'Route not found' }));
 
 export default {
-  fetch: (request, env, ctx) => router.handle(request, env, ctx)
+  fetch: (request, env, ctx) => router.fetch(request, env, ctx).catch(err => jsonResponse(null, 500, { message: err.message }))
 };
+

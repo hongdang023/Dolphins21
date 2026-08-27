@@ -2,7 +2,8 @@
  * Dolphins21 API Client with local fallback store
  * Clean initial state (Zero dummy data)
  */
-const API_BASE = 'https://dolphins21-api.pages.dev/v1';
+const API_BASE = 'https://dolphins21-api.dangtuyethong2324.workers.dev/v1';
+
 
 window.DolphinsStore = {
   KEYS: {
