@@ -139,15 +139,39 @@ window.DolphinsStore = {
     return goals;
   },
 
-  // Evidence Notes (Empty initial state)
+  // Evidence Notes (Empty initial state + Auto-synced Assessment Notes)
   getEvidence() {
-    return this.get(this.KEYS.EVIDENCE, []);
+    const manualList = this.get(this.KEYS.EVIDENCE, []);
+    const ratings = this.getRatings();
+    const assessmentNotes = [];
+
+    Object.values(ratings).forEach(r => {
+      if (r && r.note && r.note.trim().length > 0) {
+        const compId = r.competency_id || (r.indicator_id ? r.indicator_id.split('-IND')[0] : '');
+        assessmentNotes.push({
+          id: 'note_' + r.indicator_id,
+          indicator_id: r.indicator_id,
+          competency_id: compId,
+          domain_id: r.domain_id,
+          content: r.note,
+          created_at: r.updated_at || new Date().toISOString(),
+          date: r.updated_at ? r.updated_at.split('T')[0] : new Date().toISOString().split('T')[0],
+          source: 'assessment_note',
+          stage: r.stage || 0
+        });
+      }
+    });
+
+    const combined = [...manualList, ...assessmentNotes];
+    combined.sort((a, b) => new Date(b.created_at || b.date || 0) - new Date(a.created_at || a.date || 0));
+    return combined;
   },
 
   saveEvidence(evidence) {
-    const list = this.getEvidence();
+    const list = this.get(this.KEYS.EVIDENCE, []);
     evidence.id = evidence.id || 'ev_' + Date.now();
-    evidence.created_at = new Date().toISOString();
+    evidence.created_at = evidence.created_at || new Date().toISOString();
+    evidence.source = evidence.source || 'manual_evidence';
     list.unshift(evidence);
     this.set(this.KEYS.EVIDENCE, list);
     return evidence;

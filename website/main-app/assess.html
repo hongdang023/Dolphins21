@@ -65,23 +65,12 @@
       </div>
     </section>
 
-    <!-- 3. Notes & Evidence Log Banner (Collapsible/Preview) -->
-    <section class="notes-log-card" id="notesLogCard">
-      <div class="notes-log-header">
-        <span style="color: var(--primary);">📖</span>
-        <span data-i18n="assess_notes_log_title">Nhật ký ghi chú & Minh chứng của Đánh giá viên</span>
-      </div>
-      <div id="notesLogContent" style="margin-top: 12px;">
-        <p style="color: var(--muted-foreground); font-size: 0.875rem; margin: 0;" data-i18n="assess_notes_empty">
-          Chưa có ghi chú hoặc minh chứng nào. Vui lòng chọn mức điểm và điền lý do giải trình bên dưới.
-        </p>
-      </div>
-    </section>
-
-    <!-- 4. Domains, Competencies & Indicators Hierarchical Evaluator -->
+    <!-- 3. Domains, Competencies & Indicators Hierarchical Evaluator -->
     <section id="assessmentTreeContainer" style="display: flex; flex-direction: column; gap: 1rem;">
       <!-- Generated dynamically -->
     </section>
+
+
 
     <!-- Next Action Banner (Rule A0-Tôn chỉ 1) -->
     <div class="next-action-banner" style="margin-top: 32px;">
@@ -285,41 +274,7 @@
         }
       });
 
-      // 5. Render Notes Log Summary
-      renderNotesLog();
-    }
 
-    function renderNotesLog() {
-      const isEn = I18N.getLang() === 'en';
-      const ratings = DolphinsStore.getRatings();
-      const container = document.getElementById('notesLogContent');
-      const noteItems = [];
-
-      Object.values(ratings).forEach(r => {
-        if (r && r.note && r.note.trim().length > 0) {
-          noteItems.push(r);
-        }
-      });
-
-      if (noteItems.length === 0) {
-        container.innerHTML = `
-          <p style="color: var(--muted-foreground); font-size: 0.875rem; margin: 0;">
-            ${isEn ? 'No notes or evidence records entered yet. Select score levels and enter justifications in the fields below.' : 'Chưa có ghi chú hoặc minh chứng nào. Vui lòng chọn mức điểm và điền lý do giải trình bên dưới.'}
-          </p>
-        `;
-      } else {
-        container.innerHTML = `
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            ${noteItems.map(item => `
-              <div style="font-size: 0.85rem; border-left: 2px solid var(--primary); padding-left: 10px;">
-                <strong style="color: var(--primary);">${item.indicator_id}:</strong> 
-                <span style="color: var(--foreground); font-style: italic;">"${item.note}"</span>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      }
-    }
 
     function renderAssessmentTree() {
       const isEn = I18N.getLang() === 'en';
@@ -503,7 +458,6 @@
 
     function saveNote(indicatorId, note, competencyId, domainId) {
       DolphinsStore.saveRatingNote(indicatorId, note, competencyId, domainId);
-      renderNotesLog();
     }
   </script>
 </body>
