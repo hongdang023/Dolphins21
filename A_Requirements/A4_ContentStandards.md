@@ -26,7 +26,19 @@ Hệ thống hỗ trợ **2 chế độ ngôn ngữ độc lập**: **Tiếng Vi
 - Ở **Chế độ Tiếng Việt (VI Mode)**: Ngắn gọn, tự nhiên, gãy gọn (≤2-3 từ).
 - Ở **Chế độ Tiếng Anh (EN Mode)**: Chuẩn mực quốc tế, súc tích (≤2-3 words).
 
-### 1.3 Bảng đối chiếu thuật ngữ tinh gọn chuẩn hóa (Lean Micro-Copy)
+### 1.3 Quy tắc 100% Thuần Ngữ & Tuyệt Đối Không Dịch Lai Tạp Nửa Việt Nửa Anh (Pure-Language Rule)
+- **VI Mode (100% Tiếng Việt Chuẩn Mực Sư Phạm)**:
+  - Tất cả tên năng lực (`name_vi`), câu hỏi định hướng (`guiding_question_vi`), mô tả 4 cấp độ rubric (`rubric_stage1_vi` ... `rubric_stage4_vi`), và ví dụ minh họa (`example_stage1_vi` ... `example_stage4_vi`) **BẮT BUỘC phải là 100% tiếng Việt chuẩn mực, tự nhiên, trôi chảy**.
+  - ❌ **Tuyệt đối CẤM**: Ghép nửa câu tiếng Việt với nửa câu tiếng Anh (code-switching / dịch dở dang) như: `"Tôi hiếm khi take on new challenges or risks to pursue learning."` hoặc `"Tôi có chiến lược seek new challenges and take risks..."`.
+  - ✅ **ĐÚNG**: Dịch hoàn chỉnh và trau chuốt toàn bộ ý: `"Tôi hiếm khi chủ động đón nhận các thử thách mới hoặc dám chấp nhận rủi ro để theo đuổi việc học hỏi."`
+- **EN Mode (100% English)**:
+  - 100% toàn bộ tiêu chí, câu hỏi định hướng, rubric stage 1–4 giữ nguyên bản gốc chuẩn quốc tế từ Building 21.
+
+### 1.4 Quy tắc tiền tố Ví dụ (Prefix De-duplication Rule)
+- Trường dữ liệu `example_stageX_vi` và `example_stageX` **chỉ lưu phần thân nội dung ví dụ**, KHÔNG được chứa các tiền tố dư thừa như `Ví dụ: ` hoặc `e.g. `.
+- Phần giao diện (UI) sẽ tự động hiển thị huy hiệu `<span class="example-tag">💡 Ví dụ:</span>` (VI Mode) hoặc `<span class="example-tag">💡 e.g.</span>` (EN Mode) để tránh lỗi hiển thị lặp từ `💡 Ví dụ: Ví dụ: ...`.
+
+### 1.5 Bảng đối chiếu thuật ngữ tinh gọn chuẩn hóa (Lean Micro-Copy)
 
 | Vị trí / Thành phần | Chế độ Tiếng Việt (VI Mode) | Chế độ Tiếng Anh (EN Mode) | Quy chuẩn tinh gọn (≤2-3 từ) |
 | :--- | :--- | :--- | :--- |

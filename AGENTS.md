@@ -85,10 +85,11 @@ Core tokens (từ conan1.com/styles):
 ## CONTENT RULES – Không được vi phạm
 
 1. **Rubric text** từ Building 21: KHÔNG paraphrase, KHÔNG rút gọn làm sai lệch tiêu chí
-2. **Ngôn ngữ & 2 Mode**: Hỗ trợ 2 chế độ độc lập **VI Mode** (100% Tiếng Việt chuẩn) và **EN Mode** (100% Tiếng Anh chuẩn). Tuyệt đối **KHÔNG dùng chú thích đóng mở ngoặc dịch thuật lai tạp** như `(Radar Chart)`, `(Evidence)`, `(Goals)` trong UI
-3. **CTA**: Phải bắt đầu bằng động từ hành động + kết quả cụ thể (Ví dụ: "Lưu đánh giá và xem Biểu Đồ Năng Lực" / "Save Assessment and View Radar Chart")
-4. **Tone**: Không "Điểm yếu" / "Kém nhất" → dùng "Đang phát triển nhất" / "Primary growth area"
-5. **Next Action**: LUÔN có sau kết quả – không để user "xem xong rồi đóng tab"
+2. **Ngôn ngữ & 2 Mode**: Hỗ trợ 2 chế độ độc lập **VI Mode** (100% Tiếng Việt chuẩn mực, tuyệt đối KHÔNG code-switching / không ghép nửa câu tiếng Anh) và **EN Mode** (100% Tiếng Anh chuẩn). Tuyệt đối **KHÔNG dùng chú thích đóng mở ngoặc dịch thuật lai tạp** như `(Radar Chart)`, `(Evidence)`, `(Goals)` trong UI
+3. **Tiền tố Ví dụ**: Không lưu lặp `Ví dụ: ` hoặc `e.g. ` trong data fields (`example_stageX`), để UI tự render đồng nhất `💡 Ví dụ: ...` tránh lỗi hiển thị lặp từ `Ví dụ: Ví dụ:`.
+4. **CTA**: Phải bắt đầu bằng động từ hành động + kết quả cụ thể (Ví dụ: "Đánh giá ngay →", "Lưu Snapshot", "Tạo Mục Tiêu")
+5. **Tone**: Không "Điểm yếu" / "Kém nhất" → dùng "Đang phát triển nhất" / "Primary growth area"
+6. **Next Action**: LUÔN có sau kết quả – không để user "xem xong rồi đóng tab"
 
 ---
 
