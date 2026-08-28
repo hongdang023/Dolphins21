@@ -265,37 +265,54 @@
             ${I18N.t('focus_pinned_empty')}
           </div>`;
       } else {
-        pinnedContainer.innerHTML = pinnedList.map(c => `
-          <div class="surface-card" style="border: 2px solid var(--primary); padding: 18px; position: relative;">
-            <span class="eyebrow" style="font-size: 11px;">${c.id} · ${c.domain_id}</span>
-            <h4 style="font-size: 15px; font-weight: 800; margin: 6px 0 12px;">${c.name}</h4>
-            <div style="font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 8px;">
-              ${c.avgScore ? c.avgScore.toFixed(1) : (isEn ? 'Not assessed' : 'Chưa đánh giá')} / 4.0
+        pinnedContainer.innerHTML = pinnedList.map(c => {
+          const cName = isEn ? c.name : (c.name_vi || c.name);
+          const scoreDisplay = c.assessedCount > 0 
+            ? `${c.avgScore.toFixed(1)} / 4.0` 
+            : (isEn ? 'Not assessed' : 'Chưa đánh giá');
+
+          return `
+            <div class="surface-card" style="border: 2px solid var(--primary); padding: 18px; position: relative;">
+              <span class="eyebrow" style="font-size: 11px;">${c.id} · ${c.domain_id}</span>
+              <h4 style="font-size: 15px; font-weight: 800; margin: 6px 0 12px;">${cName}</h4>
+              <div style="font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 8px;">
+                ${scoreDisplay}
+              </div>
+              <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 16px;">
+                ${c.assessedCount} / ${c.totalIndicators} ${isEn ? 'indicators assessed' : 'tiêu chí đã đánh giá'}
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <a href="focus-detail.html?comp=${c.id}" class="btn btn-secondary btn-sm" style="flex: 1; text-align: center;">${isEn ? 'Details →' : 'Chi tiết →'}</a>
+                <button onclick="togglePin('${c.id}')" class="btn btn-secondary btn-sm" style="color: var(--primary);">${isEn ? 'Unpin' : 'Bỏ ghim'}</button>
+              </div>
             </div>
-            <div style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 16px;">
-              ${c.assessedCount} / ${c.totalIndicators} ${isEn ? 'indicators assessed' : 'tiêu chí đã đánh giá'}
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <a href="focus-detail.html?comp=${c.id}" class="btn btn-secondary btn-sm" style="flex: 1; text-align: center;">${isEn ? 'Details →' : 'Chi tiết →'}</a>
-              <button onclick="togglePin('${c.id}')" class="btn btn-secondary btn-sm" style="color: var(--primary);">${isEn ? 'Unpin' : 'Bỏ ghim'}</button>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
 
       // Render Sorted List
       const sortedContainer = document.getElementById('sortedList');
-      const sortedComps = [...compScores].sort((a, b) => a.avgScore - b.avgScore);
+      const sortedComps = [...compScores].sort((a, b) => {
+        // Unassessed or lower scores first
+        if (a.assessedCount === 0 && b.assessedCount > 0) return -1;
+        if (b.assessedCount === 0 && a.assessedCount > 0) return 1;
+        return a.avgScore - b.avgScore;
+      });
 
       sortedContainer.innerHTML = sortedComps.map(c => {
         const isPinned = focus.includes(c.id);
+        const cName = isEn ? c.name : (c.name_vi || c.name);
+        const scoreDisplay = c.assessedCount > 0 
+          ? `${c.avgScore.toFixed(1)} / 4.0` 
+          : (isEn ? 'Not assessed' : 'Chưa đánh giá');
+
         return `
           <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; justify-content: space-between; align-items: center; background: ${isPinned ? 'var(--accent)' : '#fff'};">
             <div>
               <span class="eyebrow" style="font-size: 11px; margin-bottom: 2px;">${c.id} · ${c.domain_id}</span>
-              <div style="font-weight: 700; font-size: 15px;">${c.name}</div>
+              <div style="font-weight: 700; font-size: 15px;">${cName}</div>
               <div style="font-size: 12px; color: var(--muted-foreground); margin-top: 4px;">
-                ${isEn ? 'Stage' : 'Điểm'}: <strong style="color: var(--primary);">${c.avgScore ? c.avgScore.toFixed(1) : (isEn ? 'Not assessed' : 'Chưa đánh giá')} / 4.0</strong> (${c.assessedCount}/${c.totalIndicators} ${isEn ? 'indicators' : 'tiêu chí'})
+                ${isEn ? 'Stage' : 'Mức điểm'}: <strong style="color: var(--primary);">${scoreDisplay}</strong> (${c.assessedCount}/${c.totalIndicators} ${isEn ? 'indicators' : 'tiêu chí'})
               </div>
             </div>
             <div style="display: flex; gap: 8px;">
