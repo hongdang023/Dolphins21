@@ -331,7 +331,7 @@ window.DolphinsAPI = {
   renderUserBadge() {
     const user = DolphinsStore.getCurrentUser();
     const isDefault = user === 'teacher_default' || user === 'anonymous_teacher';
-    const displayLabel = isDefault ? 'Tài khoản cá nhân' : user;
+    const displayLabel = isDefault ? 'Chưa đăng nhập' : user;
 
     const nav = document.querySelector('.header-inner') || document.querySelector('.app-header');
     if (!nav) return;
@@ -345,20 +345,68 @@ window.DolphinsAPI = {
     }
 
     badge.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--muted); border: 1px solid var(--border); border-radius: 20px;">
+      <div style="display: flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--muted); border: 1px solid var(--border); border-radius: 20px;">
         <span style="font-size: 14px;">👤</span>
-        <span style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${displayLabel}</span>
-        <button id="btnSwitchAccount" title="Đổi tài khoản" style="background: none; border: none; font-size: 12px; color: var(--primary); cursor: pointer; padding: 0 4px; font-weight: 700;">[Đổi]</button>
+        <span style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${displayLabel}</span>
+        <button id="btnSwitchAccount" title="Tài khoản giáo viên" style="background: var(--accent); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--primary); cursor: pointer; padding: 2px 8px; font-weight: 700; margin-left: 2px;">${isDefault ? 'Đăng nhập' : 'Tài khoản'}</button>
       </div>
     `;
 
     document.getElementById('btnSwitchAccount').addEventListener('click', () => {
-      const newEmail = prompt('Nhập Email giáo viên của bạn để chuyển tài khoản và tải dữ liệu riêng:', user !== 'teacher_default' ? user : '');
-      if (newEmail && newEmail.trim()) {
-        DolphinsStore.setCurrentUser(newEmail);
-        window.location.reload();
-      }
+      this.openAccountModal();
     });
+  },
+
+  openAccountModal() {
+    let modal = document.getElementById('dolphinsAccountModal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'dolphinsAccountModal';
+      modal.className = 'drawer-overlay';
+      modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+      document.body.appendChild(modal);
+    }
+
+    const user = DolphinsStore.getCurrentUser();
+    const isDefault = user === 'teacher_default' || user === 'anonymous_teacher';
+
+    modal.innerHTML = `
+      <div style="background: #ffffff; border-radius: 12px; padding: 24px; width: 90%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-size: 18px; font-weight: 800; margin: 0;">👤 Tài khoản Giáo viên</h3>
+          <button id="closeAccountModalBtn" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--muted-foreground);">✕</button>
+        </div>
+        
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px; line-height: 1.4;">
+          Mỗi giáo viên có một bảng điểm và kế hoạch phát triển hoàn toàn độc lập, bảo mật.
+        </p>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px;">Email giáo viên của bạn:</label>
+          <input type="email" id="inputTeacherEmail" class="form-input" style="width: 100%; box-sizing: border-box;" placeholder="vidu: co.hong@school.edu.vn" value="${isDefault ? '' : user}">
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button id="cancelAccountModalBtn" class="btn btn-secondary btn-sm">Đóng</button>
+          <button id="saveAccountModalBtn" class="btn btn-primary btn-sm">Đăng nhập / Tải dữ liệu</button>
+        </div>
+      </div>
+    `;
+
+    modal.style.display = 'flex';
+
+    document.getElementById('closeAccountModalBtn').onclick = () => { modal.style.display = 'none'; };
+    document.getElementById('cancelAccountModalBtn').onclick = () => { modal.style.display = 'none'; };
+
+    document.getElementById('saveAccountModalBtn').onclick = () => {
+      const email = document.getElementById('inputTeacherEmail').value.trim();
+      if (email && email.includes('@')) {
+        DolphinsStore.setCurrentUser(email);
+        window.location.reload();
+      } else {
+        alert('Vui lòng nhập định dạng email hợp lệ (ví dụ: co.hong@gmail.com)');
+      }
+    };
   },
 
   async saveProfileRemote(profile) {
