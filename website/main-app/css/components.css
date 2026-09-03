@@ -1053,4 +1053,116 @@
   border-color: var(--primary);
 }
 
+/* Sort Toolbar & Tooltip Component */
+.sort-toolbar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sort-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+
+.sort-pill-group {
+  display: inline-flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sort-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  font-family: Arial, sans-serif;
+  line-height: 1.2;
+}
+
+.sort-pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.sort-pill.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+.sort-pill .tooltip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  transition: all 0.15s ease;
+  margin-left: 2px;
+}
+
+.sort-pill.active .tooltip-icon {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Tooltip Popup */
+.sort-pill .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 220px;
+  background-color: #1c1917;
+  color: #ffffff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.35;
+  position: absolute;
+  z-index: 100;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.2s, visibility 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  white-space: normal;
+}
+
+.sort-pill .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1c1917 transparent transparent transparent;
+}
+
+.sort-pill:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
 

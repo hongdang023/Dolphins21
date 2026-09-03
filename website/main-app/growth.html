@@ -106,9 +106,39 @@
       </div>
 
       <div class="surface-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
           <h3 style="font-size: 18px; font-weight: 800;" data-i18n="focus_all_title">Tất cả Competencies</h3>
-          <span style="font-size: 13px; color: var(--muted-foreground);" id="focusSortHint">Xếp theo vùng cần phát triển nhất để dễ ưu tiên</span>
+          
+          <div class="sort-toolbar-wrapper">
+            <span class="sort-label" id="sortLabelText" data-i18n="sort_by_label">Sắp xếp:</span>
+            <div class="sort-pill-group" id="focusSortPills">
+              <button class="sort-pill active" data-sort="priority">
+                <span id="sortPriorityLabel">Ưu tiên</span>
+                <span class="tooltip-icon">?</span>
+                <span class="tooltip-text" id="sortPriorityTip">Ưu tiên hành động: Ghim trọng tâm + Đang có mục tiêu + Điểm thấp cần cải thiện trước.</span>
+              </button>
+              <button class="sort-pill" data-sort="importance">
+                <span id="sortImportanceLabel">Trọng số</span>
+                <span class="tooltip-icon">?</span>
+                <span class="tooltip-text" id="sortImportanceTip">Nền tảng cốt lõi: Ưu tiên năng lực tiên quyết về Quản trị lớp học & Mối quan hệ (TC1, TC5.1, TC5.2).</span>
+              </button>
+              <button class="sort-pill" data-sort="health">
+                <span id="sortHealthLabel">Thế mạnh</span>
+                <span class="tooltip-icon">?</span>
+                <span class="tooltip-text" id="sortHealthTip">Độ vững vàng: Xếp điểm từ Cao xuống Thấp (Stage 4.0 → 1.0) hiển thị vùng thế mạnh.</span>
+              </button>
+              <button class="sort-pill" data-sort="risk">
+                <span id="sortRiskLabel">Rủi ro</span>
+                <span class="tooltip-icon">?</span>
+                <span class="tooltip-text" id="sortRiskTip">Vùng cảnh báo: Năng lực điểm rất thấp (Stage 1.0 - 1.5) hoặc chưa từng được đánh giá.</span>
+              </button>
+              <button class="sort-pill" data-sort="model_order">
+                <span id="sortModelOrderLabel">Thứ tự chuẩn</span>
+                <span class="tooltip-icon">?</span>
+                <span class="tooltip-text" id="sortModelOrderTip">Mục lục chuẩn: Xếp tuần tự theo cấu trúc khung Building 21 (TC1.1 → TC5.6).</span>
+              </button>
+            </div>
+          </div>
         </div>
         <div id="sortedList" style="display: flex; flex-direction: column; gap: 12px;">
           <!-- Render full sorted list -->
@@ -197,17 +227,60 @@
   <script src="js/building21-data.js"></script>
   <script src="js/api-client.js"></script>
   <script src="js/i18n.js"></script>
-  <script>
+    let currentFocusSort = 'priority';
+
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const initialTab = urlParams.get('tab');
 
       initTabs(initialTab);
+      initSortPills();
       renderAllSections();
       initModals();
 
-      window.addEventListener('languageChanged', renderAllSections);
+      window.addEventListener('languageChanged', () => {
+        updateSortPillsLanguage();
+        renderAllSections();
+      });
     });
+
+    function initSortPills() {
+      const pills = document.querySelectorAll('#focusSortPills .sort-pill');
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentFocusSort = pill.dataset.sort;
+          renderFocusTab();
+        });
+      });
+      updateSortPillsLanguage();
+    }
+
+    function updateSortPillsLanguage() {
+      const isEn = I18N.getLang() === 'en';
+      const elLabel = document.getElementById('sortLabelText');
+      if (elLabel) elLabel.textContent = isEn ? 'Sort by' : 'Sắp xếp:';
+
+      const sortMap = {
+        priority: { label: isEn ? 'Priority' : 'Ưu tiên', tip: isEn ? I18N.t('sort_priority_tip') : 'Ưu tiên hành động: Ghim trọng tâm + Đang có mục tiêu + Điểm thấp cần cải thiện trước.' },
+        importance: { label: isEn ? 'Importance' : 'Trọng số', tip: isEn ? I18N.t('sort_importance_tip') : 'Nền tảng cốt lõi: Ưu tiên năng lực tiên quyết về Quản trị lớp học & Mối quan hệ (TC1, TC5.1, TC5.2).' },
+        health: { label: isEn ? 'Health' : 'Thế mạnh', tip: isEn ? I18N.t('sort_health_tip') : 'Độ vững vàng: Xếp điểm từ Cao xuống Thấp (Stage 4.0 → 1.0) hiển thị vùng thế mạnh.' },
+        risk: { label: isEn ? 'Risk' : 'Rủi ro', tip: isEn ? I18N.t('sort_risk_tip') : 'Vùng cảnh báo: Năng lực điểm rất thấp (Stage 1.0 - 1.5) hoặc chưa từng được đánh giá.' },
+        model_order: { label: isEn ? 'Model order' : 'Thứ tự chuẩn', tip: isEn ? I18N.t('sort_model_order_tip') : 'Mục lục chuẩn: Xếp tuần tự theo cấu trúc khung Building 21 (TC1.1 → TC5.6).' }
+      };
+
+      document.getElementById('sortPriorityLabel').textContent = sortMap.priority.label;
+      document.getElementById('sortPriorityTip').textContent = sortMap.priority.tip;
+      document.getElementById('sortImportanceLabel').textContent = sortMap.importance.label;
+      document.getElementById('sortImportanceTip').textContent = sortMap.importance.tip;
+      document.getElementById('sortHealthLabel').textContent = sortMap.health.label;
+      document.getElementById('sortHealthTip').textContent = sortMap.health.tip;
+      document.getElementById('sortRiskLabel').textContent = sortMap.risk.label;
+      document.getElementById('sortRiskTip').textContent = sortMap.risk.tip;
+      document.getElementById('sortModelOrderLabel').textContent = sortMap.model_order.label;
+      document.getElementById('sortModelOrderTip').textContent = sortMap.model_order.tip;
+    }
 
     function initTabs(defaultTab) {
       const tabs = document.querySelectorAll('.growth-tab-btn');
@@ -238,10 +311,7 @@
       const isEn = I18N.getLang() === 'en';
       const ratings = DolphinsStore.getRatings();
       const focus = DolphinsStore.getFocus();
-
-      document.getElementById('focusSortHint').textContent = isEn 
-        ? 'Sorted by primary growth areas' 
-        : 'Xếp theo vùng cần phát triển nhất để dễ ưu tiên';
+      const goals = DolphinsStore.getGoals();
 
       const compScores = window.BUILDING21_DATA.competencies.map(c => {
         const indList = window.BUILDING21_DATA.indicators.filter(ind => ind.competency_id === c.id);
@@ -253,7 +323,14 @@
           }
         });
         const avg = count > 0 ? (sum / count) : 0;
-        return { ...c, avgScore: avg, assessedCount: count, totalIndicators: indList.length };
+        return { 
+          ...c, 
+          avgScore: avg, 
+          assessedCount: count, 
+          totalIndicators: indList.length,
+          isPinned: focus.includes(c.id),
+          hasActiveGoal: goals.some(g => g.competency_id === c.id)
+        };
       });
 
       // Render Pinned
@@ -290,15 +367,50 @@
         }).join('');
       }
 
+      // Sort logic based on currentFocusSort
+      let sortedComps = [...compScores];
+      if (currentFocusSort === 'priority') {
+        sortedComps.sort((a, b) => {
+          const aPin = a.isPinned ? 1 : 0;
+          const bPin = b.isPinned ? 1 : 0;
+          if (aPin !== bPin) return bPin - aPin;
+
+          const aGoal = a.hasActiveGoal ? 1 : 0;
+          const bGoal = b.hasActiveGoal ? 1 : 0;
+          if (aGoal !== bGoal) return bGoal - aGoal;
+
+          if (a.assessedCount === 0 && b.assessedCount > 0) return -1;
+          if (b.assessedCount === 0 && a.assessedCount > 0) return 1;
+          return a.avgScore - b.avgScore;
+        });
+      } else if (currentFocusSort === 'importance') {
+        const foundationList = ['TC1', 'TC5.1', 'TC5.2'];
+        sortedComps.sort((a, b) => {
+          const aBase = foundationList.some(p => a.id.startsWith(p)) ? 1 : 0;
+          const bBase = foundationList.some(p => b.id.startsWith(p)) ? 1 : 0;
+          if (aBase !== bBase) return bBase - aBase;
+          return a.id.localeCompare(b.id, undefined, { numeric: true });
+        });
+      } else if (currentFocusSort === 'health') {
+        // High score first (Mastery)
+        sortedComps.sort((a, b) => {
+          if (a.assessedCount === 0 && b.assessedCount > 0) return 1;
+          if (b.assessedCount === 0 && a.assessedCount > 0) return -1;
+          return b.avgScore - a.avgScore;
+        });
+      } else if (currentFocusSort === 'risk') {
+        // Unassessed & critical low score first
+        sortedComps.sort((a, b) => {
+          if (a.assessedCount === 0 && b.assessedCount > 0) return -1;
+          if (b.assessedCount === 0 && a.assessedCount > 0) return 1;
+          return a.avgScore - b.avgScore;
+        });
+      } else if (currentFocusSort === 'model_order') {
+        sortedComps.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+      }
+
       // Render Sorted List
       const sortedContainer = document.getElementById('sortedList');
-      const sortedComps = [...compScores].sort((a, b) => {
-        // Unassessed or lower scores first
-        if (a.assessedCount === 0 && b.assessedCount > 0) return -1;
-        if (b.assessedCount === 0 && a.assessedCount > 0) return 1;
-        return a.avgScore - b.avgScore;
-      });
-
       sortedContainer.innerHTML = sortedComps.map(c => {
         const isPinned = focus.includes(c.id);
         const cName = isEn ? c.name : (c.name_vi || c.name);
