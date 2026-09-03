@@ -329,9 +329,30 @@ window.DolphinsAPI = {
   },
 
   renderUserBadge() {
+    const profile = DolphinsStore.getProfile();
     const user = DolphinsStore.getCurrentUser();
     const isDefault = user === 'teacher_default' || user === 'anonymous_teacher';
-    const displayLabel = isDefault ? 'Chưa đăng nhập' : user;
+    
+    // Determine display name
+    let displayName = profile && profile.name && profile.name.trim() ? profile.name.trim() : '';
+    if (!displayName) {
+      if (!isDefault) {
+        displayName = user.split('@')[0];
+        // Capitalize first letters if email prefix
+        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      } else {
+        displayName = 'Giáo viên';
+      }
+    }
+
+    // Generate initial for avatar
+    const initials = displayName
+      .split(' ')
+      .filter(Boolean)
+      .map(w => w[0])
+      .slice(-2)
+      .join('')
+      .toUpperCase() || '🐬';
 
     const nav = document.querySelector('.header-inner') || document.querySelector('.app-header');
     if (!nav) return;
@@ -340,21 +361,23 @@ window.DolphinsAPI = {
     if (!badge) {
       badge = document.createElement('div');
       badge.id = 'userProfileBadge';
-      badge.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--foreground);';
+      badge.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--foreground); cursor: pointer;';
       nav.appendChild(badge);
     }
 
     badge.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--muted); border: 1px solid var(--border); border-radius: 20px;">
-        <span style="font-size: 14px;">👤</span>
-        <span style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${displayLabel}</span>
-        <button id="btnSwitchAccount" title="Tài khoản giáo viên" style="background: var(--accent); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--primary); cursor: pointer; padding: 2px 8px; font-weight: 700; margin-left: 2px;">${isDefault ? 'Đăng nhập' : 'Tài khoản'}</button>
+      <div id="btnProfileTrigger" style="display: flex; align-items: center; gap: 8px; padding: 4px 12px; background: var(--muted); border: 1px solid var(--border); border-radius: 24px; transition: all 0.2s ease;">
+        <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; letter-spacing: 0.5px;">
+          ${initials}
+        </div>
+        <span style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700;">${displayName}</span>
+        <span style="font-size: 11px; color: var(--primary); font-weight: 700; background: var(--accent); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(204,78,45,0.2);">Hồ sơ ⚙️</span>
       </div>
     `;
 
-    document.getElementById('btnSwitchAccount').addEventListener('click', () => {
+    document.getElementById('btnProfileTrigger').onclick = () => {
       this.openAccountModal();
-    });
+    };
   },
 
   openAccountModal() {
@@ -363,33 +386,74 @@ window.DolphinsAPI = {
       modal = document.createElement('div');
       modal.id = 'dolphinsAccountModal';
       modal.className = 'drawer-overlay';
-      modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+      modal.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(2px);';
       document.body.appendChild(modal);
     }
 
+    const profile = DolphinsStore.getProfile();
     const user = DolphinsStore.getCurrentUser();
     const isDefault = user === 'teacher_default' || user === 'anonymous_teacher';
 
+    const displayName = profile && profile.name ? profile.name : '';
+    const subject = profile && profile.subject ? profile.subject : '';
+    const years = profile && profile.years_experience ? profile.years_experience : '';
+    const school = profile && profile.school ? profile.school : '';
+
+    const initials = (displayName || user)
+      .split(' ')
+      .filter(Boolean)
+      .map(w => w[0])
+      .slice(-2)
+      .join('')
+      .toUpperCase() || '🐬';
+
     modal.innerHTML = `
-      <div style="background: #ffffff; border-radius: 12px; padding: 24px; width: 90%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--border);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="font-size: 18px; font-weight: 800; margin: 0;">👤 Tài khoản Giáo viên</h3>
-          <button id="closeAccountModalBtn" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--muted-foreground);">✕</button>
+      <div style="background: #ffffff; border-radius: 16px; padding: 28px; width: 90%; max-width: 460px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; box-shadow: 0 4px 10px rgba(204,78,45,0.3);">
+              ${initials}
+            </div>
+            <div>
+              <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--foreground);">${displayName || 'Hồ sơ Giáo viên'}</h3>
+              <div style="font-size: 12px; color: var(--muted-foreground); margin-top: 2px;">${isDefault ? 'Tài khoản cục bộ' : user}</div>
+            </div>
+          </div>
+          <button id="closeAccountModalBtn" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted-foreground); line-height: 1;">✕</button>
         </div>
-        
-        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 16px; line-height: 1.4;">
-          Mỗi giáo viên có một bảng điểm và kế hoạch phát triển hoàn toàn độc lập, bảo mật.
-        </p>
 
-        <div style="margin-bottom: 16px;">
-          <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px;">Email giáo viên của bạn:</label>
-          <input type="email" id="inputTeacherEmail" class="form-input" style="width: 100%; box-sizing: border-box;" placeholder="vidu: co.hong@school.edu.vn" value="${isDefault ? '' : user}">
-        </div>
+        <form id="modalProfileForm" style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--foreground); margin-bottom: 4px;">Họ và tên:</label>
+            <input type="text" id="modalNameInput" class="form-input" style="width: 100%; box-sizing: border-box; font-size: 14px;" placeholder="Ví dụ: Cô Đặng Tuyết Hồng" value="${displayName}" required>
+          </div>
 
-        <div style="display: flex; gap: 8px; justify-content: flex-end;">
-          <button id="cancelAccountModalBtn" class="btn btn-secondary btn-sm">Đóng</button>
-          <button id="saveAccountModalBtn" class="btn btn-primary btn-sm">Đăng nhập / Tải dữ liệu</button>
-        </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--foreground); margin-bottom: 4px;">Môn giảng dạy:</label>
+            <input type="text" id="modalSubjectInput" class="form-input" style="width: 100%; box-sizing: border-box; font-size: 14px;" placeholder="Ví dụ: Toán học, STEM, Ngữ văn" value="${subject}">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label style="display: block; font-size: 12px; font-weight: 700; color: var(--foreground); margin-bottom: 4px;">Số năm kinh nghiệm:</label>
+              <input type="number" id="modalYearsInput" min="0" max="60" class="form-input" style="width: 100%; box-sizing: border-box; font-size: 14px;" placeholder="Ví dụ: 6" value="${years}">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; font-weight: 700; color: var(--foreground); margin-bottom: 4px;">Trường / Cơ sở:</label>
+              <input type="text" id="modalSchoolInput" class="form-input" style="width: 100%; box-sizing: border-box; font-size: 14px;" placeholder="Ví dụ: THCS Đổi Mới" value="${school}">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; pt: 12px; border-top: 1px solid var(--border); padding-top: 16px;">
+            <button type="button" id="btnSwitchAccountModal" style="background: none; border: none; font-size: 12px; color: var(--muted-foreground); cursor: pointer; text-decoration: underline;">
+              Đổi tài khoản khác ↗
+            </button>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="cancelAccountModalBtn" class="btn btn-secondary btn-sm">Đóng</button>
+              <button type="submit" class="btn btn-primary btn-sm">Lưu hồ sơ ✓</button>
+            </div>
+          </div>
+        </form>
       </div>
     `;
 
@@ -398,13 +462,28 @@ window.DolphinsAPI = {
     document.getElementById('closeAccountModalBtn').onclick = () => { modal.style.display = 'none'; };
     document.getElementById('cancelAccountModalBtn').onclick = () => { modal.style.display = 'none'; };
 
-    document.getElementById('saveAccountModalBtn').onclick = () => {
-      const email = document.getElementById('inputTeacherEmail').value.trim();
-      if (email && email.includes('@')) {
-        DolphinsStore.setCurrentUser(email);
+    document.getElementById('btnSwitchAccountModal').onclick = () => {
+      const newEmail = prompt('Nhập Email giáo viên khác:', user !== 'teacher_default' ? user : '');
+      if (newEmail && newEmail.trim() && newEmail.includes('@')) {
+        DolphinsStore.setCurrentUser(newEmail);
         window.location.reload();
-      } else {
-        alert('Vui lòng nhập định dạng email hợp lệ (ví dụ: co.hong@gmail.com)');
+      }
+    };
+
+    document.getElementById('modalProfileForm').onsubmit = (e) => {
+      e.preventDefault();
+      const updatedProfile = {
+        name: document.getElementById('modalNameInput').value.trim(),
+        subject: document.getElementById('modalSubjectInput').value.trim(),
+        years_experience: parseInt(document.getElementById('modalYearsInput').value) || 0,
+        school: document.getElementById('modalSchoolInput').value.trim()
+      };
+      DolphinsStore.saveProfile(updatedProfile);
+      modal.style.display = 'none';
+      DolphinsAPI.renderUserBadge();
+      // If on dashboard, reload to reflect name
+      if (window.location.pathname.includes('dashboard')) {
+        window.location.reload();
       }
     };
   },
