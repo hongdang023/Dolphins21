@@ -46,6 +46,28 @@ Trước khi viết bất kỳ dòng code nào, AI phải đọc các file sau t
 
 ---
 
+## WORKFLOW & IMPLEMENTATION RULES – 4 NGUYÊN TẮC THÉP (BẮT BUỘC TUÂN THỦ)
+
+1. **Zero Workarounds (Không giải pháp tạm bợ)**:
+   - Tuyệt đối CẤM dùng `window.prompt()`, `alert()`, `confirm()` thô của trình duyệt.
+   - Mọi tương tác, popup, đổi tài khoản phải xây dựng qua **Modal/Drawer chuẩn Design System** (Burnt Orange, Card, tokens).
+   - Không được tạo các nút "chữa cháy" tạm bợ phá vỡ cấu trúc UI.
+
+2. **End-to-End User Journey First (Tư duy luồng người dùng trọn vẹn)**:
+   - Trước khi code, AI phải xác định rõ toàn bộ luồng: `[Vị trí ban đầu] ➜ [Hành động / Click] ➜ [Cổng xác thực / Middleware] ➜ [Màn hình tiếp theo] ➜ [Nơi lưu trữ D1]`.
+   - Phân định rành mạch giữa **Public Pages** (như Landing Page) và **Protected App Pages** (như Onboarding, Dashboard, Assess, Growth).
+
+3. **Dual-State & Session Testing (Kiểm thử 2 trạng thái người dùng)**:
+   - Mọi tính năng liên quan đến Auth/Dữ liệu phải được kiểm thử cho cả 2 trường hợp:
+     - **Trường hợp 1 (Khách mới / Incognito)**: Phải qua xác thực OTP, mở Form Onboarding trống 100% (không tự nạp dữ liệu mẫu/giả).
+     - **Trường hợp 2 (Khách cũ / Active Session)**: Vào thẳng Dashboard và tự động tải đúng 100% dữ liệu cũ từ D1 Database theo email.
+   - Xử lý triệt để nút **Đăng xuất (Logout/Revoke Session)** để cho phép đổi tài khoản sạch sẽ qua Cloudflare Access.
+
+4. **Proof of Work with Real Evidence (Bằng chứng xác thực trước khi báo xong)**:
+   - AI phải tự kiểm thử bằng browser subagent, chụp ảnh màn hình / đối soát API thành công rồi mới báo hoàn tất cho người dùng.
+
+---
+
 ## DESIGN RULES – Không được vi phạm
 
 ### Typography & Font
