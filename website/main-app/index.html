@@ -125,10 +125,10 @@
         </a>
 
         <!-- Option 2: Sign Up (New Profile) -->
-        <a href="onboarding.html" class="btn btn-secondary" style="padding: 14px 18px; font-size: 14px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-radius: 10px; border: 1.5px solid var(--border); background: #ffffff;">
+        <a href="#" id="btnAuthSignUp" class="btn btn-secondary" style="padding: 14px 18px; font-size: 14px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-radius: 10px; border: 1.5px solid var(--border); background: #ffffff;">
           <div style="text-align: left;">
             <div style="font-weight: 800; font-size: 15px; color: var(--foreground);" id="authBtnSignupTitle">✨ Tạo hồ sơ mới (Sign Up)</div>
-            <div style="font-size: 12px; color: var(--muted-foreground); font-weight: normal; margin-top: 2px;" id="authBtnSignupDesc">Giáo viên mới ➜ Khởi tạo hồ sơ</div>
+            <div style="font-size: 12px; color: var(--muted-foreground); font-weight: normal; margin-top: 2px;" id="authBtnSignupDesc">Giáo viên mới ➜ Xác thực Email & Khởi tạo hồ sơ</div>
           </div>
           <span style="font-size: 18px; color: var(--primary);">→</span>
         </a>
@@ -165,7 +165,7 @@
       document.getElementById('authBtnLoginTitle').textContent = isEn ? '🔑 Log In' : '🔑 Đăng nhập (Log In)';
       document.getElementById('authBtnLoginDesc').textContent = isEn ? 'Existing account ➜ Load past data' : 'Đã có tài khoản ➜ Tải dữ liệu cũ';
       document.getElementById('authBtnSignupTitle').textContent = isEn ? '✨ Sign Up' : '✨ Tạo hồ sơ mới (Sign Up)';
-      document.getElementById('authBtnSignupDesc').textContent = isEn ? 'New teacher ➜ Onboarding survey' : 'Giáo viên mới ➜ Khởi tạo hồ sơ';
+      document.getElementById('authBtnSignupDesc').textContent = isEn ? 'New teacher ➜ Auth & Onboarding' : 'Giáo viên mới ➜ Xác thực Email & Khởi tạo hồ sơ';
       document.getElementById('closeAuthChoiceBtn').textContent = isEn ? 'Close' : 'Đóng cửa sổ';
     }
 
@@ -187,6 +187,13 @@
 
       modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.style.display = 'none';
+      });
+
+      // Sign Up Handler: Force fresh Cloudflare Access authentication for new teacher
+      document.getElementById('btnAuthSignUp').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('dolphins21_current_user_email');
+        window.location.href = 'https://sparkling-dust-0f63.cloudflareaccess.com/cdn-cgi/access/logout?returnTo=' + encodeURIComponent(window.location.origin + '/onboarding.html');
       });
     });
   </script>
