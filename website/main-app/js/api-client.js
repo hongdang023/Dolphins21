@@ -366,12 +366,11 @@ window.DolphinsAPI = {
     }
 
     badge.innerHTML = `
-      <div id="btnProfileTrigger" style="display: flex; align-items: center; gap: 8px; padding: 4px 12px; background: var(--muted); border: 1px solid var(--border); border-radius: 24px; transition: all 0.2s ease;">
-        <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; letter-spacing: 0.5px;">
+      <div id="btnProfileTrigger" style="display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 6px; background: var(--muted); border: 1px solid var(--border); border-radius: 24px; transition: all 0.2s ease;">
+        <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; letter-spacing: 0.5px;">
           ${initials}
         </div>
-        <span style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700;">${displayName}</span>
-        <span style="font-size: 11px; color: var(--primary); font-weight: 700; background: var(--accent); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(204,78,45,0.2);">Hồ sơ ⚙️</span>
+        <span style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; font-size: 14px;">${displayName}</span>
       </div>
     `;
 
@@ -424,6 +423,11 @@ window.DolphinsAPI = {
 
         <form id="modalProfileForm" style="display: flex; flex-direction: column; gap: 12px;">
           <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--foreground); margin-bottom: 4px;">Email tài khoản:</label>
+            <input type="email" id="modalEmailInput" class="form-input" style="width: 100%; box-sizing: border-box; font-size: 14px; background: #f8fafc; color: var(--muted-foreground);" value="${isDefault ? '' : user}" readonly>
+          </div>
+
+          <div>
             <label style="display: block; font-size: 12px; font-weight: 700; color: var(--foreground); margin-bottom: 4px;">Họ và tên:</label>
             <input type="text" id="modalNameInput" class="form-input" style="width: 100%; box-sizing: border-box; font-size: 14px;" placeholder="Ví dụ: Cô Đặng Tuyết Hồng" value="${displayName}" required>
           </div>
@@ -445,8 +449,8 @@ window.DolphinsAPI = {
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; pt: 12px; border-top: 1px solid var(--border); padding-top: 16px;">
-            <button type="button" id="btnSwitchAccountModal" style="background: none; border: none; font-size: 12px; color: var(--muted-foreground); cursor: pointer; text-decoration: underline;">
-              Đổi tài khoản khác ↗
+            <button type="button" id="btnSwitchAccountModal" style="background: none; border: none; font-size: 12px; color: #dc2626; cursor: pointer; text-decoration: underline; font-weight: 600;">
+              Đăng xuất / Đổi tài khoản ➜
             </button>
             <div style="display: flex; gap: 8px;">
               <button type="button" id="cancelAccountModalBtn" class="btn btn-secondary btn-sm">Đóng</button>
@@ -463,10 +467,9 @@ window.DolphinsAPI = {
     document.getElementById('cancelAccountModalBtn').onclick = () => { modal.style.display = 'none'; };
 
     document.getElementById('btnSwitchAccountModal').onclick = () => {
-      const newEmail = prompt('Nhập Email giáo viên khác:', user !== 'teacher_default' ? user : '');
-      if (newEmail && newEmail.trim() && newEmail.includes('@')) {
-        DolphinsStore.setCurrentUser(newEmail);
-        window.location.reload();
+      if (confirm('Bạn có muốn đăng xuất để chuyển sang tài khoản giáo viên khác qua Cloudflare Access?')) {
+        localStorage.removeItem('dolphins21_current_user_email');
+        window.location.href = 'https://sparkling-dust-0f63.cloudflareaccess.com/cdn-cgi/access/logout?returnTo=' + encodeURIComponent(window.location.origin + '/onboarding.html');
       }
     };
 
