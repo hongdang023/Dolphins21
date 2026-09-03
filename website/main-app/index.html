@@ -57,8 +57,8 @@
         Đánh giá năng lực theo khung Building 21, lập mục tiêu SMART và lưu trữ Evidence lớp học.
       </p>
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <a href="onboarding.html" class="btn btn-primary" id="btnHeroOnboard" style="padding: 12px 28px; font-size: 16px;">Tạo hồ sơ →</a>
-        <a href="assess.html" class="btn btn-secondary" id="btnHeroAssess" style="padding: 12px 24px;">Tự đánh giá</a>
+        <button type="button" class="btn btn-primary" id="btnHeroOnboard" style="padding: 12px 28px; font-size: 16px;">Tạo hồ sơ →</button>
+        <a href="dashboard.html" class="btn btn-secondary" id="btnHeroAssess" style="padding: 12px 24px;">Đăng nhập / Xem tổng quan</a>
       </div>
     </section>
 
@@ -67,7 +67,7 @@
         <span class="eyebrow" style="margin-bottom: 2px;" id="bannerEyebrow">Action Loop</span>
         <div class="next-action-text" id="bannerText">Sẵn sàng cho chu kỳ mới? Bắt đầu đánh giá ngay hôm nay.</div>
       </div>
-      <a href="assess.html" class="btn btn-primary btn-sm" id="bannerBtn">Bắt đầu ngay →</a>
+      <button type="button" class="btn btn-primary btn-sm" id="bannerBtn">Bắt đầu ngay →</button>
     </div>
 
     <div class="feature-grid">
@@ -105,6 +105,39 @@
     </div>
   </main>
 
+  <!-- AUTH SELECTION MODAL (Log in vs Sign up) -->
+  <div id="authChoiceModal" class="drawer-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; backdrop-filter: blur(3px); align-items: center; justify-content: center;">
+    <div style="background: #ffffff; border-radius: 16px; padding: 32px 28px; width: 90%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); border: 1px solid var(--border); text-align: center;">
+      <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; border: 1px solid rgba(204,78,45,0.2);">
+        🐬
+      </div>
+      <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 6px;" id="authModalTitle">Chào mừng đến với Dolphins21</h3>
+      <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 24px;" id="authModalSubtitle">Vui lòng chọn hình thức truy cập:</p>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+        <!-- Option 1: Log In (Existing Data) -->
+        <a href="dashboard.html" class="btn btn-primary" style="padding: 14px 18px; font-size: 14px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-radius: 10px;">
+          <div style="text-align: left;">
+            <div style="font-weight: 800; font-size: 15px;" id="authBtnLoginTitle">🔑 Đăng nhập (Log In)</div>
+            <div style="font-size: 12px; opacity: 0.9; font-weight: normal; margin-top: 2px;" id="authBtnLoginDesc">Đã có tài khoản ➜ Tải dữ liệu cũ</div>
+          </div>
+          <span style="font-size: 18px;">→</span>
+        </a>
+
+        <!-- Option 2: Sign Up (New Profile) -->
+        <a href="onboarding.html" class="btn btn-secondary" style="padding: 14px 18px; font-size: 14px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-radius: 10px; border: 1.5px solid var(--border); background: #ffffff;">
+          <div style="text-align: left;">
+            <div style="font-weight: 800; font-size: 15px; color: var(--foreground);" id="authBtnSignupTitle">✨ Tạo hồ sơ mới (Sign Up)</div>
+            <div style="font-size: 12px; color: var(--muted-foreground); font-weight: normal; margin-top: 2px;" id="authBtnSignupDesc">Giáo viên mới ➜ Khởi tạo hồ sơ</div>
+          </div>
+          <span style="font-size: 18px; color: var(--primary);">→</span>
+        </a>
+      </div>
+
+      <button type="button" id="closeAuthChoiceBtn" style="background: none; border: none; font-size: 13px; color: var(--muted-foreground); cursor: pointer; text-decoration: underline;">Đóng cửa sổ</button>
+    </div>
+  </div>
+
   <script src="js/i18n.js"></script>
   <script>
     function updateHeroContent() {
@@ -113,7 +146,7 @@
       document.getElementById('heroTitle').innerHTML = isEn ? 'Measure to <span>Act</span>.<br>Ground in <span>Evidence</span>.' : 'Đo lường để <span>hành động</span>.<br>Chứng minh bằng <span>Evidence</span>.';
       document.getElementById('heroSubtitle').textContent = isEn ? 'Assess competencies with Building 21, set SMART goals, and log weekly classroom progress.' : 'Đánh giá năng lực theo khung Building 21, lập mục tiêu SMART và lưu trữ Evidence lớp học.';
       document.getElementById('btnHeroOnboard').textContent = isEn ? 'Set up Profile →' : 'Tạo hồ sơ →';
-      document.getElementById('btnHeroAssess').textContent = isEn ? 'Self-Assess' : 'Tự đánh giá';
+      document.getElementById('btnHeroAssess').textContent = isEn ? 'Log in / Dashboard' : 'Đăng nhập / Tổng quan';
       document.getElementById('bannerEyebrow').textContent = isEn ? 'Action Loop' : 'Action Loop';
       document.getElementById('bannerText').textContent = isEn ? 'Ready for your next growth cycle? Start assessment now.' : 'Sẵn sàng cho chu kỳ mới? Bắt đầu đánh giá ngay hôm nay.';
       document.getElementById('bannerBtn').textContent = isEn ? 'Start Now →' : 'Bắt đầu ngay →';
@@ -125,11 +158,36 @@
       document.getElementById('f3Desc').textContent = isEn ? 'Log authentic classroom artifacts and student feedback for each indicator.' : 'Lưu trữ minh chứng, phản hồi học sinh và bài tập thực hành theo từng Indicator.';
       document.getElementById('f4Title').textContent = isEn ? 'Weekly Streak' : 'Weekly Streak';
       document.getElementById('f4Desc').textContent = isEn ? 'Check-in under 5 minutes weekly to update progress and maintain rhythm.' : 'Check-in dưới 5 phút mỗi tuần để cập nhật tiến độ và duy trì nhịp điệu phản tư.';
+
+      // Modal content i18n
+      document.getElementById('authModalTitle').textContent = isEn ? 'Welcome to Dolphins21' : 'Chào mừng đến với Dolphins21';
+      document.getElementById('authModalSubtitle').textContent = isEn ? 'Please choose your access mode:' : 'Vui lòng chọn hình thức truy cập:';
+      document.getElementById('authBtnLoginTitle').textContent = isEn ? '🔑 Log In' : '🔑 Đăng nhập (Log In)';
+      document.getElementById('authBtnLoginDesc').textContent = isEn ? 'Existing account ➜ Load past data' : 'Đã có tài khoản ➜ Tải dữ liệu cũ';
+      document.getElementById('authBtnSignupTitle').textContent = isEn ? '✨ Sign Up' : '✨ Tạo hồ sơ mới (Sign Up)';
+      document.getElementById('authBtnSignupDesc').textContent = isEn ? 'New teacher ➜ Onboarding survey' : 'Giáo viên mới ➜ Khởi tạo hồ sơ';
+      document.getElementById('closeAuthChoiceBtn').textContent = isEn ? 'Close' : 'Đóng cửa sổ';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       updateHeroContent();
       window.addEventListener('languageChanged', updateHeroContent);
+
+      const modal = document.getElementById('authChoiceModal');
+      const openModal = (e) => {
+        if (e) e.preventDefault();
+        modal.style.display = 'flex';
+      };
+
+      document.getElementById('btnHeroOnboard').addEventListener('click', openModal);
+      document.getElementById('bannerBtn').addEventListener('click', openModal);
+      document.getElementById('closeAuthChoiceBtn').addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
     });
   </script>
 </body>

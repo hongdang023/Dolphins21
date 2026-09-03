@@ -320,12 +320,78 @@ window.DolphinsAPI = {
         const result = await res.json();
         if (result.data && result.data.email && result.data.email !== 'anonymous_teacher' && result.data.email !== 'default_teacher') {
           DolphinsStore.setCurrentUser(result.data.email);
+          await this.syncFromRemote();
         }
       }
     } catch (e) {
       console.warn('Auth check skipped (offline/local mode)');
     }
     this.renderUserBadge();
+  },
+
+  async syncFromRemote() {
+    try {
+      // 1. Profile
+      const pRes = await fetch(`${API_BASE}/profile`, { headers: this.getHeaders() });
+      if (pRes.ok) {
+        const pData = await pRes.json();
+        if (pData.data && pData.data.name) {
+          DolphinsStore.set(DolphinsStore.KEYS.PROFILE, pData.data);
+        }
+      }
+
+      // 2. Ratings
+      const rRes = await fetch(`${API_BASE}/indicators`, { headers: this.getHeaders() });
+      if (rRes.ok) {
+        const rData = await rRes.json();
+        if (rData.data && Array.isArray(rData.data) && rData.data.length > 0) {
+          const ratingsMap = {};
+          rData.data.forEach(item => {
+            ratingsMap[item.indicator_id] = item;
+          });
+          DolphinsStore.set(DolphinsStore.KEYS.RATINGS, ratingsMap);
+        }
+      }
+
+      // 3. Goals
+      const gRes = await fetch(`${API_BASE}/goals`, { headers: this.getHeaders() });
+      if (gRes.ok) {
+        const gData = await gRes.json();
+        if (gData.data && Array.isArray(gData.data)) {
+          DolphinsStore.set(DolphinsStore.KEYS.GOALS, gData.data);
+        }
+      }
+
+      // 4. Evidence
+      const eRes = await fetch(`${API_BASE}/evidence`, { headers: this.getHeaders() });
+      if (eRes.ok) {
+        const eData = await eRes.json();
+        if (eData.data && Array.isArray(eData.data)) {
+          DolphinsStore.set(DolphinsStore.KEYS.EVIDENCE, eData.data);
+        }
+      }
+
+      // 5. Snapshots
+      const sRes = await fetch(`${API_BASE}/snapshots`, { headers: this.getHeaders() });
+      if (sRes.ok) {
+        const sData = await sRes.json();
+        if (sData.data && Array.isArray(sData.data)) {
+          DolphinsStore.set(DolphinsStore.KEYS.SNAPSHOTS, sData.data);
+        }
+      }
+
+      // 6. Focus
+      const fRes = await fetch(`${API_BASE}/focus`, { headers: this.getHeaders() });
+      if (fRes.ok) {
+        const fData = await fRes.json();
+        if (fData.data && Array.isArray(fData.data)) {
+          const focusIds = fData.data.map(item => item.competency_id);
+          DolphinsStore.set(DolphinsStore.KEYS.FOCUS, focusIds);
+        }
+      }
+    } catch (err) {
+      console.warn('Sync from remote failed', err);
+    }
   },
 
   renderUserBadge() {
