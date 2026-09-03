@@ -193,7 +193,7 @@
       document.getElementById('btnAuthSignUp').addEventListener('click', (e) => {
         e.preventDefault();
         localStorage.removeItem('dolphins21_current_user_email');
-        window.location.href = 'https://sparkling-dust-0f63.cloudflareaccess.com/cdn-cgi/access/logout?returnTo=' + encodeURIComponent(window.location.origin + '/onboarding.html');
+        window.location.href = 'https://sparkling-dust-0f63.cloudflareaccess.com/cdn-cgi/access/logout?returnTo=' + encodeURIComponent(window.location.origin + '/onboarding.html?mode=new');
       });
     });
   </script>

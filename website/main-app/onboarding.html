@@ -81,22 +81,30 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderOnboarding();
 
-      const profile = DolphinsStore.getProfile();
-      if (profile) {
-        document.getElementById('nameInput').value = profile.name || '';
-        document.getElementById('subjectInput').value = profile.subject || '';
-        document.getElementById('yearsInput').value = profile.years_experience || '';
-        document.getElementById('schoolInput').value = profile.school || '';
+      // For new onboarding survey, keep inputs clean and blank so teacher enters their own real info
+      const urlParams = new URLSearchParams(window.location.search);
+      const isNew = urlParams.get('mode') === 'new';
+
+      if (!isNew) {
+        const profile = DolphinsStore.getProfile();
+        // Only fill if it's not a sample/dummy name
+        if (profile && profile.name && profile.name !== 'Thầy Nguyễn Hoàng Nam' && profile.name !== 'teacher_default') {
+          document.getElementById('nameInput').value = profile.name || '';
+          document.getElementById('subjectInput').value = profile.subject || '';
+          document.getElementById('yearsInput').value = profile.years_experience || '';
+          document.getElementById('schoolInput').value = profile.school || '';
+        }
       }
 
       document.getElementById('profileForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        DolphinsStore.saveProfile({
-          name: document.getElementById('nameInput').value,
-          subject: document.getElementById('subjectInput').value,
+        const profileData = {
+          name: document.getElementById('nameInput').value.trim(),
+          subject: document.getElementById('subjectInput').value.trim(),
           years_experience: parseInt(document.getElementById('yearsInput').value) || 0,
-          school: document.getElementById('schoolInput').value
-        });
+          school: document.getElementById('schoolInput').value.trim()
+        };
+        DolphinsStore.saveProfile(profileData);
         window.location.href = 'dashboard.html';
       });
 
