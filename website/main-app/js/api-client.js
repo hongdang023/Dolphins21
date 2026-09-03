@@ -1,24 +1,50 @@
 /**
  * Dolphins21 API Client with local fallback store
  * Clean initial state (Zero dummy data)
+ * Full Multi-User Isolation & Cloudflare Access Integration
  */
 const API_BASE = 'https://dolphins21-api.dangtuyethong2324.workers.dev/v1';
 
-
 window.DolphinsStore = {
   KEYS: {
-    PROFILE: 'dolphins21_profile',
-    RATINGS: 'dolphins21_ratings',
-    SNAPSHOTS: 'dolphins21_snapshots',
-    GOALS: 'dolphins21_goals',
-    EVIDENCE: 'dolphins21_evidence',
-    WEEKLY_LOGS: 'dolphins21_weekly_logs',
-    FOCUS: 'dolphins21_focus'
+    PROFILE: 'profile',
+    RATINGS: 'ratings',
+    SNAPSHOTS: 'snapshots',
+    GOALS: 'goals',
+    EVIDENCE: 'evidence',
+    WEEKLY_LOGS: 'weekly_logs',
+    FOCUS: 'focus'
+  },
+
+  getCurrentUser() {
+    let email = localStorage.getItem('dolphins21_current_user_email');
+    if (!email) {
+      email = 'teacher_default';
+      localStorage.setItem('dolphins21_current_user_email', email);
+    }
+    return email;
+  },
+
+  setCurrentUser(email) {
+    if (email && email.trim()) {
+      const cleanEmail = email.toLowerCase().trim();
+      const prevEmail = this.getCurrentUser();
+      if (prevEmail !== cleanEmail) {
+        localStorage.setItem('dolphins21_current_user_email', cleanEmail);
+        window.dispatchEvent(new CustomEvent('userChanged', { detail: { email: cleanEmail } }));
+      }
+    }
+  },
+
+  getUserKey(baseKey) {
+    const user = this.getCurrentUser();
+    return `dolphins21_${user}_${baseKey}`;
   },
 
   get(key, defaultValue = null) {
     try {
-      const data = localStorage.getItem(key);
+      const scopedKey = this.getUserKey(key);
+      const data = localStorage.getItem(scopedKey);
       return data ? JSON.parse(data) : defaultValue;
     } catch (e) {
       return defaultValue;
@@ -27,7 +53,8 @@ window.DolphinsStore = {
 
   set(key, value) {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      const scopedKey = this.getUserKey(key);
+      localStorage.setItem(scopedKey, JSON.stringify(value));
     } catch (e) {
       console.warn('LocalStorage error', e);
     }
@@ -35,8 +62,10 @@ window.DolphinsStore = {
 
   // Profile (Empty initial state)
   getProfile() {
+    const user = this.getCurrentUser();
+    const defaultName = user !== 'teacher_default' ? user.split('@')[0] : '';
     return this.get(this.KEYS.PROFILE, {
-      name: '',
+      name: defaultName,
       subject: '',
       years_experience: '',
       school: ''
@@ -45,6 +74,8 @@ window.DolphinsStore = {
 
   saveProfile(profile) {
     this.set(this.KEYS.PROFILE, profile);
+    // Background sync to API if available
+    DolphinsAPI.saveProfileRemote(profile).catch(() => {});
     return profile;
   },
 
@@ -65,6 +96,8 @@ window.DolphinsStore = {
       updated_at: new Date().toISOString()
     };
     this.set(this.KEYS.RATINGS, ratings);
+    // Sync remote
+    DolphinsAPI.saveRatingRemote(ratings[indicatorId]).catch(() => {});
     return ratings[indicatorId];
   },
 
@@ -88,6 +121,7 @@ window.DolphinsStore = {
     };
     snapshots.unshift(newSnap);
     this.set(this.KEYS.SNAPSHOTS, snapshots);
+    DolphinsAPI.saveSnapshotRemote(newSnap).catch(() => {});
     return newSnap;
   },
 
@@ -100,9 +134,11 @@ window.DolphinsStore = {
     let focus = this.getFocus();
     if (focus.includes(competencyId)) {
       focus = focus.filter(id => id !== competencyId);
+      DolphinsAPI.removeFocusRemote(competencyId).catch(() => {});
     } else {
       if (focus.length >= 5) focus.shift();
       focus.push(competencyId);
+      DolphinsAPI.saveFocusRemote(competencyId).catch(() => {});
     }
     this.set(this.KEYS.FOCUS, focus);
     return focus;
@@ -121,6 +157,7 @@ window.DolphinsStore = {
     if (idx >= 0) goals[idx] = goal;
     else goals.unshift(goal);
     this.set(this.KEYS.GOALS, goals);
+    DolphinsAPI.saveGoalRemote(goal).catch(() => {});
     return goal;
   },
 
@@ -133,6 +170,7 @@ window.DolphinsStore = {
         ms.completed = ms.completed ? 0 : 1;
         if (note) ms.evidence_note = note;
         if (ms.completed) ms.completed_at = new Date().toISOString();
+        DolphinsAPI.updateMilestoneRemote(ms.id, ms.completed, ms.evidence_note).catch(() => {});
       }
       this.set(this.KEYS.GOALS, goals);
     }
@@ -174,6 +212,7 @@ window.DolphinsStore = {
     evidence.source = evidence.source || 'manual_evidence';
     list.unshift(evidence);
     this.set(this.KEYS.EVIDENCE, list);
+    DolphinsAPI.saveEvidenceRemote(evidence).catch(() => {});
     return evidence;
   },
 
@@ -191,6 +230,7 @@ window.DolphinsStore = {
     };
     logs.unshift(newLog);
     this.set(this.KEYS.WEEKLY_LOGS, logs);
+    DolphinsAPI.saveWeeklyLogRemote(newLog).catch(() => {});
     return newLog;
   },
 
@@ -199,13 +239,12 @@ window.DolphinsStore = {
     return logs.length;
   },
 
-  // Sample Data Loader (A5 Guideline)
+  // Sample Data Loader
   isSampleDataLoaded() {
     return this.get('dolphins21_is_sample_data', false);
   },
 
   loadSampleData() {
-    // 1. Sample Profile
     this.saveProfile({
       name: 'Thầy Nguyễn Hoàng Nam',
       subject: 'Toán học & STEM',
@@ -213,7 +252,6 @@ window.DolphinsStore = {
       school: 'Trường THCS-THPT Đổi Mới'
     });
 
-    // 2. Sample Ratings
     const sampleRatings = {
       'TC1.1-IND-1': { indicator_id: 'TC1.1-IND-1', stage: 3, competency_id: 'TC1.1', domain_id: 'TC.1', updated_at: new Date().toISOString() },
       'TC1.1-IND-2': { indicator_id: 'TC1.1-IND-2', stage: 3, competency_id: 'TC1.1', domain_id: 'TC.1', updated_at: new Date().toISOString() },
@@ -225,7 +263,6 @@ window.DolphinsStore = {
     };
     this.set(this.KEYS.RATINGS, sampleRatings);
 
-    // 3. Sample Goals
     const sampleGoals = [{
       id: 'goal_sample_1',
       indicator_id: 'TC1.2-IND-1',
@@ -241,20 +278,17 @@ window.DolphinsStore = {
     }];
     this.set(this.KEYS.GOALS, sampleGoals);
 
-    // 4. Sample Evidence
     const sampleEvidence = [{
       id: 'ev_sample_1',
       competency_id: 'TC1.2',
       indicator_id: 'TC1.2-IND-1',
       date: new Date().toISOString().split('T')[0],
-      content: 'Hình ảnh và dữ liệu thống kê từ phiếu phản hồi nhanh Google Forms cuối tiết Hình học không gian lớp 9A2. 85% học sinh nắm vững định lý sau hoạt động ghép nhóm.',
+      content: 'Hình ảnh và dữ liệu thống kê từ phiếu phản hồi nhanh Google Forms cuối tiết Hình học không gian lớp 9A2.',
       tags: ['TC1.2', 'Thực hành lớp học']
     }];
     this.set(this.KEYS.EVIDENCE, sampleEvidence);
 
-    // 5. Sample Focus
     this.set(this.KEYS.FOCUS, ['TC1.2', 'TC4.1']);
-
     this.set('dolphins21_is_sample_data', true);
   },
 
@@ -269,3 +303,104 @@ window.DolphinsStore = {
     this.set('dolphins21_is_sample_data', false);
   }
 };
+
+// Remote API Sync Handler
+window.DolphinsAPI = {
+  getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'X-User-Email': DolphinsStore.getCurrentUser()
+    };
+  },
+
+  async initAuth() {
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, { headers: this.getHeaders() });
+      if (res.ok) {
+        const result = await res.json();
+        if (result.data && result.data.email && result.data.email !== 'anonymous_teacher' && result.data.email !== 'default_teacher') {
+          DolphinsStore.setCurrentUser(result.data.email);
+        }
+      }
+    } catch (e) {
+      console.warn('Auth check skipped (offline/local mode)');
+    }
+    this.renderUserBadge();
+  },
+
+  renderUserBadge() {
+    const user = DolphinsStore.getCurrentUser();
+    const isDefault = user === 'teacher_default' || user === 'anonymous_teacher';
+    const displayLabel = isDefault ? 'Tài khoản cá nhân' : user;
+
+    const nav = document.querySelector('.header-inner') || document.querySelector('.app-header');
+    if (!nav) return;
+
+    let badge = document.getElementById('userProfileBadge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'userProfileBadge';
+      badge.style.cssText = 'display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--foreground);';
+      nav.appendChild(badge);
+    }
+
+    badge.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--muted); border: 1px solid var(--border); border-radius: 20px;">
+        <span style="font-size: 14px;">👤</span>
+        <span style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${displayLabel}</span>
+        <button id="btnSwitchAccount" title="Đổi tài khoản" style="background: none; border: none; font-size: 12px; color: var(--primary); cursor: pointer; padding: 0 4px; font-weight: 700;">[Đổi]</button>
+      </div>
+    `;
+
+    document.getElementById('btnSwitchAccount').addEventListener('click', () => {
+      const newEmail = prompt('Nhập Email giáo viên của bạn để chuyển tài khoản và tải dữ liệu riêng:', user !== 'teacher_default' ? user : '');
+      if (newEmail && newEmail.trim()) {
+        DolphinsStore.setCurrentUser(newEmail);
+        window.location.reload();
+      }
+    });
+  },
+
+  async saveProfileRemote(profile) {
+    return fetch(`${API_BASE}/profile`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify(profile) });
+  },
+
+  async saveRatingRemote(rating) {
+    return fetch(`${API_BASE}/indicators`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify(rating) });
+  },
+
+  async saveSnapshotRemote(snapshot) {
+    return fetch(`${API_BASE}/snapshots`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify(snapshot) });
+  },
+
+  async saveGoalRemote(goal) {
+    return fetch(`${API_BASE}/goals`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify(goal) });
+  },
+
+  async updateMilestoneRemote(milestoneId, completed, note) {
+    return fetch(`${API_BASE}/milestones/${milestoneId}`, { method: 'PATCH', headers: this.getHeaders(), body: JSON.stringify({ completed, evidence_note: note }) });
+  },
+
+  async saveEvidenceRemote(evidence) {
+    return fetch(`${API_BASE}/evidence`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify(evidence) });
+  },
+
+  async saveWeeklyLogRemote(log) {
+    return fetch(`${API_BASE}/weekly-logs`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify(log) });
+  },
+
+  async saveFocusRemote(compId) {
+    return fetch(`${API_BASE}/focus`, { method: 'POST', headers: this.getHeaders(), body: JSON.stringify({ competency_id: compId }) });
+  },
+
+  async removeFocusRemote(compId) {
+    return fetch(`${API_BASE}/focus/${compId}`, { method: 'DELETE', headers: this.getHeaders() });
+  }
+};
+
+// Auto-run auth on script load
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    DolphinsAPI.initAuth();
+  });
+}
